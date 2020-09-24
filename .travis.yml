@@ -6,6 +6,11 @@ cache:
     - $HOME/.cache/pip
     - $HOME/.ccache  # https://github.com/travis-ci/travis-ci/issues/5853
 
+env:
+   global:
+        # Doctr deploy key for Fratorhe/ramanpy
+        - secure: "XNGF4empYLEegWwcez7KiLpLO48VD1SlDaEfcnCk7CiL/NzYkXraVyYz1wuOy7IOT2nss+UwtBF4Vo1cHa5J5By14tSuBzW4XwaCwj9xBQoNokGVbpQsUhtVncMe25q2FpKu8z0t5M5t1uSTiJ3uYx5Hgl0tEBCZkPA0O1iaaoYKFDcG/7Z5WNYvDztrgNkU9Y/hSWAuvFOLgR/pw+P3RYKn9EA0ZcGtIkboEl/qqJIaST3wLb3xMrcdjJM/Fb9uSFVNeSU52/4RQHQ2FGe1BpRPVw6WRlUaCuZHefuNe42SijU83YADkMEpU14rjl57FuXK24cEwNSFVlvoBJK09r64FLqcJlu1ncQMOh94stLmyfwO5RuZvihrsElWF6Xo792pSODkm6FaGEbKJqXxNTdCfy9i4DnA7Y5yFSyj/7O7gZqbC94RuNXjYVZkwoDZVZJ5WP6TWL86joDcHVNL7oizxoWwS08F7rVQVuE1+SIDzEUjbZi9tiYercTlJH7dIXaOLTdN261IPfw8xq4r4TULWEaADIGqEeNBWrM0uRL3xkYHw/ISF+urQ5eniT5uDRhGAI2v+AW3TWDNiIBqyKGCyF/JjOKi2NTF5E4EA2cYAjKCGhFMYQvoYkZE8Q9N73IcYu4nL1gNM+XDoUsfA3Lk28WxCu4FC7E+ZxDFk2U="
+
 install:
   # The versions of pip and numpy that come pre-installed are often too old and
   # can cause problems. Upgrade them.
@@ -20,4 +25,9 @@ script:
   - coverage report -m  # Generate test coverage report.
   - codecov  # Upload the report to codecov.
   - flake8  # Enforce code style ('relaxed' line length limit is set in .flake8 config file).
+  - set -e
   - make -C docs html  # Build the documentation.
+  - pip install doctr
+  - doctr deploy --built-docs docs/build/html .
+
+
