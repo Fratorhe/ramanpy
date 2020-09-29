@@ -46,7 +46,7 @@ class RamanFit(GenericFit):
         experimental_data, metadata = self.read_data_raman(file_to_analyze)
         super().__init__(experimental_data=experimental_data, peaks=peaks, other_data=other_data, folder_out=folder_out)
 
-        self.var_x = 'Wavenumber, cm^{-1}'  # for plots
+        self.var_x = 'Wavenumber, cm$^{-1}$'  # for plots
         self.var_y = 'Intensity, -'
         self.x = self.experimental_data['wavenumber'].values
         self.y = self.experimental_data['intensity'].values
@@ -75,21 +75,6 @@ class RamanFit(GenericFit):
         header = dict(element.split('=', 1) for element in header)
         return header
 
-    @staticmethod
-    def read_xyz(filename):
-        '''
-        Function to read the xyz positions from the header.
-        :param filename: str name of file
-        :return: list
-        '''
-        header = RamanFit.read_header(filename=filename)
-        axis = ['X', 'Y', 'Z']
-        positions = []
-        for element in axis:
-            position = float(
-                header.get(f'{element}(µm)', 'nan'))  # get the position in micrometers, otherwise put a nan.
-            positions.append(position)
-        return positions
 
     @staticmethod
     def reader_single_point(filename, normalize=False, remove_offset=False):
@@ -111,6 +96,21 @@ class RamanFit(GenericFit):
             data.intensity = detrend(data.intensity, type='linear')
 
         return data, header
+
+    def set_tolerances_fit(self):
+        min_max_amplitude = self.try_get_other_data(self.other_data, 'min_max_amplitude', default_value=(0, 200))
+        min_max_sigma = self.try_get_other_data(self.other_data, 'min_max_sigma', default_value=(0, 200))
+        tolerance_center = self.try_get_other_data(self.other_data, 'peak_center_tolerance', default_value=(10,))[0]
+        amplitude = self.try_get_other_data(self.other_data, 'amplitude', default_value=(10,))[0]
+        sigma = self.try_get_other_data(self.other_data, 'sigma', default_value=(10,))[0]
+
+        self.dict_tolerances_fit = {
+            'min_max_amplitude': min_max_amplitude,
+            'min_max_sigma': min_max_sigma,
+            'tolerance_center': tolerance_center,
+            'amplitude': amplitude,
+            'sigma': sigma
+        }
 
 
 class XRDFit(GenericFit):
@@ -176,3 +176,18 @@ class XRDFit(GenericFit):
             data.intensity = data.intensity.apply(lambda x: x / data.intensity.max())
 
         return data, header
+
+    def set_tolerances_fit(self):
+        min_max_amplitude = self.try_get_other_data(self.other_data, 'min_max_amplitude', default_value=(0, 10))
+        min_max_sigma = self.try_get_other_data(self.other_data, 'min_max_sigma', default_value=(0, 10))
+        tolerance_center = self.try_get_other_data(self.other_data, 'peak_center_tolerance', default_value=(5,))[0]
+        amplitude = self.try_get_other_data(self.other_data, 'peak_center_tolerance', default_value=(10,))[0]
+        sigma = self.try_get_other_data(self.other_data, 'peak_center_tolerance', default_value=(10,))[0]
+
+        self.dict_tolerances_fit = {
+            'min_max_amplitude': min_max_amplitude,
+            'min_max_sigma': min_max_sigma,
+            'tolerance_center': tolerance_center,
+            'amplitude': amplitude,
+            'sigma': sigma
+        }

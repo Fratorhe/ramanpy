@@ -1,5 +1,5 @@
 import os
-from abc import ABC
+from abc import ABC, abstractmethod
 from pathlib import Path
 
 from configobj import ConfigObj
@@ -61,6 +61,7 @@ class GenericFit(ABC):
         self.model = None
         self.params = None
         self.filename = None
+        self.dict_tolerances_fit = None
 
     def apply_normalize(self):
         self.y = self.normalize_data(self.y)
@@ -76,6 +77,10 @@ class GenericFit(ABC):
 
         self.y = self.sav_gol(self.y, win_size=win_size, poly_order=poly_order)
 
+    @abstractmethod
+    def set_tolerances_fit(self):
+        pass
+
     def build_fitting_model_peaks(self):
         """
         Fits the lorentzians to the experimental data.
@@ -84,16 +89,14 @@ class GenericFit(ABC):
 
         """
 
-        min_max_amplitude = self.try_get_other_data(self.other_data, 'min_max_amplitude', default_value=(0, 10))
-        min_max_sigma = self.try_get_other_data(self.other_data, 'min_max_sigma', default_value=(0, 10))
-        tolerance_center = self.try_get_other_data(self.other_data, 'peak_center_tolerance', default_value=(10,))[0]
         poly_type = self.other_data.get('poly_type')
         model, params = self.create_bkg_model()
         for i, cen in enumerate(self.peaks):
-            peak, pars = self.add_peak('lz%d' % (i + 1), cen, amplitude=sum(min_max_amplitude) / 2,
-                                       sigma=sum(min_max_sigma) / 2,
-                                       tolerance_center=tolerance_center,
-                                       min_max_amplitude=min_max_amplitude, min_max_sigma=min_max_sigma)
+            peak, pars = self.add_peak('lz%d' % (i + 1), cen, amplitude=self.dict_tolerances_fit['amplitude'],
+                                       sigma=self.dict_tolerances_fit['sigma'],
+                                       tolerance_center=self.dict_tolerances_fit['tolerance_center'],
+                                       min_max_amplitude=self.dict_tolerances_fit['min_max_amplitude'],
+                                       min_max_sigma=self.dict_tolerances_fit['min_max_sigma'])
             model = model + peak
             params.update(pars)
 

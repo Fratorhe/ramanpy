@@ -11,6 +11,7 @@ def raman_run_carbon(file_to_analyze, file_peaks):
 
     raman_carbon.apply_smoothing()
     raman_carbon.apply_normalize()
+    raman_carbon.set_tolerances_fit()
     raman_carbon.build_fitting_model_peaks()
     raman_carbon.run_fit_model()
     raman_carbon.plot_results()
@@ -27,6 +28,7 @@ def xrd_run_carbon(file_to_analyze, file_peaks):
 
     xrd_carbon.apply_smoothing()
     xrd_carbon.apply_normalize()
+    xrd_carbon.set_tolerances_fit()
     xrd_carbon.build_fitting_model_peaks()
     xrd_carbon.run_fit_model()
     xrd_carbon.plot_results()
