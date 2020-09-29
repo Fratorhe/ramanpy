@@ -9,7 +9,13 @@ cache:
 env:
    global:
         # Doctr deploy key for Fratorhe/ramanpy
-        - secure: "AXzahdzPhMq5LGqmSPtHwvM0XLS3mROSF1r2+iAzvZznGrd4z2LOFjOCKvOtI9v+mSTW5zlhvPpyJfytPr3sTeNtn+Azg+p1A0s0CnJo7c4z8380RtJmreRzqqhjyAQDezKvoTPX2CLWAyyt/6he03j8dTb/Jk7RRS22nIasEAfVh+AV0F7xAt5b/OWO+ApZrti/YlnUj/BKc5Xhk/WIBb9+IM4OWXApcxKyHEbUDgmhs3c8SzcwV8yAQuV3RQqQkM/bxfbVhjj9wzmXQU7vDHzI/TBhs36h+iOS6QDkTmXQvXkBjbdvtTRxg6hSmnZHeVaT5F+J56QE9Xjin4UDMJ8H5WCD2AGz7eC9wUZTOO66cN4dBu1NswqGgo2ZnRryQcMP/+J+z+trHaWbelrsscUdCdksZ3ypnEnoCOcGN4icM4B4lgU9RnqX49sOux/9XrgOHkYHRd9OCrtPrcuPD6axSh+YE1rT25DzMnlrnWwXLvU1uktgIWe4MMj3bgXp4NDRZAW5UXkfImG0Y2KAUzZW2mY5Jk9EQTnQZa79xfKasVb8fQXJ6zl1quEtY72EIDudQNcamk3RAre7rbbMZR8EqWVQv4p5k7lDoKCu+r2rdgXSVnlufadNP5an57YNH6LVIJ6iQX8/MfxSQyALQTVVlpXdcw6ACOiQBAH9mz0="
+        - secure: "jwWt0EpRpbzyOvRlZpxGkZFdD2iTGAAiXHLU0G77ltD22UGym5Eonrnb4mLR9g5e3j6oStreJX9IgEYHlju55GG8EzvCRNH2tTWMP
+        NtOtMpQLBQtUY2GZ/509xrIdKahHvMuO7nUB7FaPzldOLn8qlX6UHl6eYmTmCqzHwXX0J2iSQ+Q3KpouulJX1r5CnCCplbnjjQS9MLoOSJPP2eJ/
+        5PC63Wt4rDi+EuOjwBz6kn6SDn+0cSb6Zp+og1Hwr8zDZYI8G38CI9f/TEP+xFUmiiIfPyRWY3FK2s8CPATN7NWw0/c2OUUYHj0R0A/7LMJxxi/n
+        QOBYbKhdcpc+n6HR5p29p4tvxNDayuJ2hupCfArdK6W9PMDxhDempOSN6rJQe/YeTCnGpN/mBzBlmLuyXwjcvN9M7ueG+pHuanmwU2gbnS0V97lt
+        G6q2hzHBRqnFkFhTU/U+WOtbfMyG9CAYtHI66Wq/jOeQfR6QlFhc+4iL8pvKKML/NRsYH0meyuKBy9VbBUYKzbqX7qvEXachFR6GfIIcUwUhDLKX
+        ewBDg2yeYt380HAI+TlFf8HpfAwVtAoXbT1R7BI19NPappq1S/NdijlZxR64YEX/j5R7ZyzAD86OXtE++jfD15n8pjx+Bmc93PtqnnUqCbBsrhSm
+        /UXBpsrBn7I4hq7lK3VTRs="
 
 install:
   # The versions of pip and numpy that come pre-installed are often too old and
