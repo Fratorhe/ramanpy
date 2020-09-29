@@ -1,4 +1,4 @@
-from ramanpy import RamanFit, XRDFit
+from . import RamanFit, XRDFit
 
 
 def raman_run_carbon(file_to_analyze, file_peaks):

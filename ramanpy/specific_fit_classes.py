@@ -2,8 +2,8 @@ import os
 from itertools import takewhile
 
 import pandas as pd
-from ramanpy.generic_fit_class import GenericFit
-from ramanpy.tools import cleanup_header
+from .generic_fit_class import GenericFit
+from .tools import cleanup_header
 from scipy.signal import detrend
 
 
