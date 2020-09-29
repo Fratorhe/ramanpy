@@ -1,33 +1,21 @@
+from ..tools import cleanup_header
+from ramanpy.generic_fit_class import GenericFit
+from ramanpy.generic_fit_class import GenericFit
+
+from ..tools import cleanup_header
 
 
-import numpy as np
-
-from ..refraction import snell
-
-
-# (The above is equivalent to `from example.refraction import snell`.
-# Read on for why.)
-
-def test_one_plus_one_is_two():
-    """Check that one and one are indeed two."""
-    assert 1 + 1 == 2
-
-
-def test_perpendicular():
-    # For any indexes, a ray normal to the surface should not bend.
-    # We'll try a couple different combinations of indexes....
-
-    actual = snell(0, 2.00, 3.00)
-    expected = 0
-    assert actual == expected
-
-    actual = snell(0, 3.00, 2.00)
-    expected = 0
+def test_cleanup_header():
+    data = ['# hello', "\t,# ciao"]
+    actual = cleanup_header(data)
+    expected = ['hello', ',ciao']
     assert actual == expected
 
 
-def test_air_water():
-    n_air, n_water = 1.00, 1.33
-    actual = snell(np.pi / 4, n_air, n_water)
-    expected = 0.5605584137424605
-    assert np.allclose(actual, expected)
+def test_bkg_model_selection():
+    # check if bkg model selection returns a tuple, ugly test, but ok...
+    data = 'linear'
+    actual = GenericFit.choose_bkg_model(poly_type=data)
+    expected = tuple
+
+    assert isinstance(actual, expected)
