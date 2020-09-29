@@ -8,5 +8,6 @@ Start by importing ramanpy.
 
     import ramanpy
 
-.. autofunction:: ramanpy.refraction.snell
+
+
 
