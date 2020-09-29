@@ -3,8 +3,10 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-ramanpy Documentation
+Ramanpy
 =====================
+This code is used to fit Raman or XRD spectra.
+It is still quite under construction, but works.
 
 .. toctree::
    :maxdepth: 2
@@ -12,4 +14,6 @@ ramanpy Documentation
    installation
    usage
    release-history
-   min_versions
+   classes
+
+# TODO: add here more information about the fits and stuff

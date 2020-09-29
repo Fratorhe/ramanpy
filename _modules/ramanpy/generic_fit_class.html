@@ -1,0 +1,471 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ramanpy.generic_fit_class &mdash; ramanpy 0.post17+gda90bf2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> ramanpy
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.post17+gda90bf2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release-history.html">Release History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../classes.html">Classes</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">ramanpy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>ramanpy.generic_fit_class</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ramanpy.generic_fit_class</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">from</span> <span class="nn">configobj</span> <span class="kn">import</span> <span class="n">ConfigObj</span>
+<span class="kn">from</span> <span class="nn">lmfit.models</span> <span class="kn">import</span> <span class="n">LorentzianModel</span><span class="p">,</span> <span class="n">QuadraticModel</span><span class="p">,</span> <span class="n">LinearModel</span><span class="p">,</span> <span class="n">ConstantModel</span><span class="p">,</span> <span class="n">PolynomialModel</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="kn">import</span> <span class="n">savgol_filter</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">plot_python_vki</span> <span class="kn">import</span> <span class="n">apply_style</span>
+
+    <span class="n">apply_style</span><span class="p">()</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="k">pass</span>
+
+
+<div class="viewcode-block" id="GenericFit"><a class="viewcode-back" href="../../classes.html#ramanpy.GenericFit">[docs]</a><span class="k">class</span> <span class="nc">GenericFit</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generic Fit class</span>
+<span class="sd">    This abstract class is used as base for Raman and XRD specialized classes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">experimental_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">peaks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">other_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">folder_out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param peaks: list of peaks to be retrieved</span>
+<span class="sd">        :param other_data: if needed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># self.file_to_analyze = file_to_analyze</span>
+        <span class="c1">#</span>
+        <span class="c1"># self.filename, _ = os.path.splitext(file_to_analyze)</span>
+
+        <span class="k">if</span> <span class="n">peaks</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">peaks</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">peaks</span> <span class="o">=</span> <span class="n">peaks</span>
+
+        <span class="k">if</span> <span class="n">other_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">other_data</span> <span class="o">=</span> <span class="n">other_data</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># here we can add some default values in a dictionary</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">other_data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">other_data</span><span class="p">[</span><span class="s1">&#39;normalize_data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">other_data</span><span class="p">[</span><span class="s1">&#39;bkg&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;quadratic&#39;</span>
+
+        <span class="k">if</span> <span class="n">folder_out</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">folder_out</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">folder_out</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># output folder for the fitting report, which is not used normally</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">folder_out</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;out_report&#39;</span><span class="p">)</span>
+
+        <span class="c1"># create the out folder. if it exists, just pass</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">folder_out</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">experimental_data</span> <span class="o">=</span> <span class="n">experimental_data</span>
+
+        <span class="c1"># extract the experimental data into two variables. Gets extended in inheritance</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">var_x</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># name of the varible x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">var_y</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># values of x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dict_tolerances_fit</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">apply_normalize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalize_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">apply_smoothing</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        performs smoothing using sav_gol filter.</span>
+<span class="sd">        :param inplace: bool. if False, returns a new column for the df called smoothed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">win_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">try_get_other_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">other_data</span><span class="p">,</span> <span class="s1">&#39;window_size&#39;</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">poly_order</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">try_get_other_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">other_data</span><span class="p">,</span> <span class="s1">&#39;poly_order&#39;</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,))[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sav_gol</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">win_size</span><span class="o">=</span><span class="n">win_size</span><span class="p">,</span> <span class="n">poly_order</span><span class="o">=</span><span class="n">poly_order</span><span class="p">)</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">set_tolerances_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">build_fitting_model_peaks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fits the lorentzians to the experimental data.</span>
+<span class="sd">        It uses a quadraticModel to remove background noise, even though it is not the most important.</span>
+<span class="sd">        :return:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">poly_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">other_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;poly_type&#39;</span><span class="p">)</span>
+        <span class="n">model</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_bkg_model</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">cen</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">peaks</span><span class="p">):</span>
+            <span class="n">peak</span><span class="p">,</span> <span class="n">pars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_peak</span><span class="p">(</span><span class="s1">&#39;lz</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">cen</span><span class="p">,</span> <span class="n">amplitude</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dict_tolerances_fit</span><span class="p">[</span><span class="s1">&#39;amplitude&#39;</span><span class="p">],</span>
+                                       <span class="n">sigma</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dict_tolerances_fit</span><span class="p">[</span><span class="s1">&#39;sigma&#39;</span><span class="p">],</span>
+                                       <span class="n">tolerance_center</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dict_tolerances_fit</span><span class="p">[</span><span class="s1">&#39;tolerance_center&#39;</span><span class="p">],</span>
+                                       <span class="n">min_max_amplitude</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dict_tolerances_fit</span><span class="p">[</span><span class="s1">&#39;min_max_amplitude&#39;</span><span class="p">],</span>
+                                       <span class="n">min_max_sigma</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dict_tolerances_fit</span><span class="p">[</span><span class="s1">&#39;min_max_sigma&#39;</span><span class="p">])</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="n">model</span> <span class="o">+</span> <span class="n">peak</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">pars</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">params</span>
+
+    <span class="k">def</span> <span class="nf">run_fit_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">result</span><span class="p">,</span> <span class="n">components</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_lorentzians</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="n">result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">components</span> <span class="o">=</span> <span class="n">components</span>
+
+    <span class="k">def</span> <span class="nf">save_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># save fit report to a file:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">folder_out</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s1">_report&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">fit_report</span><span class="p">())</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s1">_params.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">params</span><span class="p">:</span>
+                <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">key</span> <span class="o">+</span> <span class="s2">&quot; = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">key</span> <span class="o">+</span> <span class="s1">&#39;_stderr = &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">plot_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;data&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">best_fit</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;best fit&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">component</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">component</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">var_x</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">var_y</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper right&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">+</span> <span class="s1">&#39;.png&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">create_bkg_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">bkg_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">choose_bkg_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">other_data</span><span class="p">[</span><span class="s1">&#39;poly_type&#39;</span><span class="p">])</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">bkg_model</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="o">**</span><span class="n">bkg_model</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">make_params</span><span class="p">(</span><span class="n">bkg_model</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">model</span><span class="p">,</span> <span class="n">params</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">add_peak</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">amplitude</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">tolerance_center</span><span class="p">,</span>
+                 <span class="n">min_max_amplitude</span><span class="p">,</span> <span class="n">min_max_sigma</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        adds a peak using a LorentzianModel from lmfit. Peaks can be summed as a linear combination</span>
+<span class="sd">        :param prefix:</span>
+<span class="sd">        :param center:</span>
+<span class="sd">        :param amplitude:</span>
+<span class="sd">        :param sigma:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">peak</span> <span class="o">=</span> <span class="n">LorentzianModel</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="n">prefix</span><span class="p">)</span>  <span class="c1"># created a lorentzian function</span>
+        <span class="n">pars</span> <span class="o">=</span> <span class="n">peak</span><span class="o">.</span><span class="n">make_params</span><span class="p">()</span>
+
+        <span class="n">pars</span><span class="p">[</span><span class="n">prefix</span> <span class="o">+</span> <span class="s1">&#39;center&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="n">center</span> <span class="o">-</span> <span class="n">tolerance_center</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="n">center</span> <span class="o">+</span> <span class="n">tolerance_center</span><span class="p">)</span>
+        <span class="n">pars</span><span class="p">[</span><span class="n">prefix</span> <span class="o">+</span> <span class="s1">&#39;amplitude&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">amplitude</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="n">min_max_amplitude</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">max</span><span class="o">=</span><span class="n">min_max_amplitude</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">pars</span><span class="p">[</span><span class="n">prefix</span> <span class="o">+</span> <span class="s1">&#39;sigma&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">sigma</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="n">min_max_sigma</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">max</span><span class="o">=</span><span class="n">min_max_sigma</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">peak</span><span class="p">,</span> <span class="n">pars</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">fit_lorentzians</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fits the lorentzians to the experimental data.</span>
+<span class="sd">        It uses a quadraticModel to remove background noise, even though it is not the most important.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">init</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">components</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">eval_components</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="n">components</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">choose_bkg_model</span><span class="p">(</span><span class="n">poly_type</span><span class="p">):</span>
+        <span class="n">poly_type</span> <span class="o">=</span> <span class="n">poly_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>  <span class="c1"># to avoid typos</span>
+
+        <span class="n">poly_type_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;quadratic&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">QuadraticModel</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;prefix&#39;</span><span class="p">:</span> <span class="s1">&#39;bkg&#39;</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}),</span>
+            <span class="s1">&#39;linear&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">LinearModel</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;prefix&#39;</span><span class="p">:</span> <span class="s1">&#39;bkg&#39;</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;intercept&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;slope&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}),</span>
+            <span class="s1">&#39;constant&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">ConstantModel</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;prefix&#39;</span><span class="p">:</span> <span class="s1">&#39;bkg&#39;</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}),</span>
+            <span class="s1">&#39;cubic&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">PolynomialModel</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;prefix&#39;</span><span class="p">:</span> <span class="s1">&#39;bkg&#39;</span><span class="p">,</span> <span class="s1">&#39;degree&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}),</span>
+        <span class="p">}</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">bkg_model</span> <span class="o">=</span> <span class="n">poly_type_dict</span><span class="p">[</span><span class="n">poly_type</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Background model not available, using quadratic&#39;</span><span class="p">)</span>
+            <span class="n">bkg_model</span> <span class="o">=</span> <span class="n">poly_type_dict</span><span class="p">[</span><span class="s1">&#39;quadratic&#39;</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">bkg_model</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">try_get_other_data</span><span class="p">(</span><span class="n">other_data</span><span class="p">,</span> <span class="n">string_to_find</span><span class="p">,</span> <span class="n">default_value</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">data_requested</span> <span class="o">=</span> <span class="n">other_data</span><span class="p">[</span><span class="n">string_to_find</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">list_numbers</span> <span class="o">=</span> <span class="n">default_value</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">string_to_find</span><span class="si">}</span><span class="s1"> range not found, set to default: </span><span class="si">{</span><span class="n">default_value</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">list_numbers</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data_requested</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">data_requested</span> <span class="o">=</span> <span class="p">(</span><span class="n">data_requested</span><span class="p">,)</span>
+
+        <span class="n">list_numbers</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">data_requested</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">list_numbers</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">sav_gol</span><span class="p">(</span><span class="n">intensity_data</span><span class="p">,</span> <span class="n">win_size</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">poly_order</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        applies the savgol_filter for a 1D data. set as static method for convenience.</span>
+<span class="sd">        :param intensity_data: 1D array.</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data_smoothed</span> <span class="o">=</span> <span class="n">savgol_filter</span><span class="p">(</span><span class="n">intensity_data</span><span class="p">,</span> <span class="n">window_length</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">win_size</span><span class="p">),</span> <span class="n">polyorder</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">poly_order</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data_smoothed</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">normalize_data</span><span class="p">(</span><span class="n">intensity_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        here we normalize as z = z - min(x)/(max(x)-min(x)).</span>
+<span class="sd">        :return: scaled intensity data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">min_intensity</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">intensity_data</span><span class="p">)</span>
+        <span class="n">max_intensity</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">intensity_data</span><span class="p">)</span>
+
+        <span class="n">intensity_data_scaled</span> <span class="o">=</span> <span class="p">(</span><span class="n">intensity_data</span> <span class="o">-</span> <span class="n">min_intensity</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">max_intensity</span> <span class="o">-</span> <span class="n">min_intensity</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">intensity_data_scaled</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">read_otherdata_configfile</span><span class="p">(</span><span class="n">config_file</span><span class="p">):</span>
+        <span class="c1"># check if there is any extra data in the configfile</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">ConfigObj</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>
+        <span class="n">other_data</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;other data&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">other_data</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">read_peaks_configfile</span><span class="p">(</span><span class="n">config_file</span><span class="p">,</span> <span class="n">default_peaks_file</span><span class="p">,</span> <span class="n">default_folder</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Alternate constructor from configobj file</span>
+<span class="sd">        :param file_to_analyze: filename</span>
+<span class="sd">        :param config_file: configobj file</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">default_folder</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">default_folder</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">ConfigObj</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>
+            <span class="c1"># get the peaks, transform them to floats, and put them in a list, then sort the list</span>
+            <span class="n">peaks</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;peaks&#39;</span><span class="p">]))</span>
+            <span class="n">peaks</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="s1">&#39;Data peaks not found or corrupted, using the one, which is in the ramanpy folder&#39;</span><span class="p">)</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">ConfigObj</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">default_folder</span> <span class="o">/</span> <span class="n">default_peaks_file</span><span class="p">))</span>
+            <span class="c1"># get the peaks, transform them to floats, and put them in a list, then sort the list</span>
+            <span class="n">peaks</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;peaks&#39;</span><span class="p">]))</span>
+            <span class="n">peaks</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">peaks</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Francisco Torres-Herrador
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
