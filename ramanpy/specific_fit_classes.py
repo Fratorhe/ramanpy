@@ -23,6 +23,16 @@ class RamanFit(GenericFit):
         list of peaks to be fit
     other_data : configObj
         as it says...other data that could be parsed, so far, almost empty
+    folder_out: str
+        folder to save the reports from the fit
+    var_x: str
+        variable name for x, usually wavenumber, for plot only
+    var_y: str
+        variable name for y, usually intensity, for plot only
+    x: list
+        data x, in this case, wavenumber
+    y: list
+        data y, in this case, intensity
 
     Methods
     -------
@@ -119,6 +129,16 @@ class XRDFit(GenericFit):
         list of peaks to be fit
     other_data : configObj
         as it says...other data that could be parsed, so far, almost empty
+    folder_out: str
+        folder to save the reports from the fit
+    var_x: str
+        variable name for x, usually angle, for plot only
+    var_y: str
+        variable name for y, usually intensity, for plot only
+    x: list
+        data x, in this case, angle
+    y: list
+        data y, in this case, intensity
 
     Methods
     -------
