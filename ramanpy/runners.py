@@ -1,7 +1,7 @@
 from ramanpy import RamanFit, XRDFit
 
 
-def raman_run_carbon(file_to_analyze, file_peaks):
+def raman_fit_carbon(file_to_analyze, file_peaks):
     """
     Runner for carbon typical Raman case.
 
@@ -28,7 +28,7 @@ def raman_run_carbon(file_to_analyze, file_peaks):
     raman_carbon.save_results()
 
 
-def xrd_run_carbon(file_to_analyze, file_peaks):
+def xrd_fit_carbon(file_to_analyze, file_peaks):
     """
     Runner for carbon typical XRD case.
 
@@ -53,3 +53,5 @@ def xrd_run_carbon(file_to_analyze, file_peaks):
     xrd_carbon.run_fit_model()
     xrd_carbon.plot_results()
     xrd_carbon.save_results()
+
+

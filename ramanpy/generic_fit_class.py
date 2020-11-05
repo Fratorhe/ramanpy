@@ -19,14 +19,33 @@ class GenericFit(ABC):
     """
     Generic Fit class
     This abstract class is used as base for Raman and XRD specialized classes.
+
+
+    Attributes
+    ----------
+    data : df
+        experimental data
+    metadata : list
+        metadata from the experiments
+    peaks : list
+        list of peaks to be fit
+    other_data : configObj
+        as it says...other data that could be parsed, so far, almost empty
+    folder_out: str
+        folder to save the reports from the fit
+
     """
+
 
     def __init__(self, experimental_data=None, peaks=None, other_data=None, folder_out=None):
         """
-        :param experimental_data: df with experimental data
-        :param peaks: list of peaks to be retrieved
-        :param other_data: if needed
-        :param folder_out folder where report will be saved.
+
+        Parameters
+        ----------
+        experimental_data: df with experimental data
+        peaks: list of peaks to be retrieved
+        other_data: if needed
+        folder_out: str folder where report will be saved.
         """
 
         if peaks is None:
@@ -38,7 +57,7 @@ class GenericFit(ABC):
             self.other_data = other_data
         else:  # here we can add some default values in a dictionary
             self.other_data = dict()
-            self.other_data['normalize_data'] = True
+            self.other_data['_normalize_data'] = True
             self.other_data['bkg'] = 'quadratic'
 
         if folder_out is not None:
@@ -65,18 +84,18 @@ class GenericFit(ABC):
         """
         performs the normalization.
         """
-        self.y = self.normalize_data(self.y)
+        self.y = self._normalize_data(self.y)
 
     def apply_smoothing(self):
         """
-        performs smoothing using sav_gol filter.
+        performs smoothing using _sav_gol filter.
         :param inplace: bool. if False, returns a new column for the df called smoothed.
         """
 
-        win_size = self.try_get_other_data(self.other_data, 'window_size', default_value=(15,))[0]
-        poly_order = self.try_get_other_data(self.other_data, 'poly_order', default_value=(3,))[0]
+        win_size = self._try_get_other_data(self.other_data, 'window_size', default_value=(15,))[0]
+        poly_order = self._try_get_other_data(self.other_data, 'poly_order', default_value=(3,))[0]
 
-        self.y = self.sav_gol(self.y, win_size=win_size, poly_order=poly_order)
+        self.y = self._sav_gol(self.y, win_size=win_size, poly_order=poly_order)
 
     @abstractmethod
     def set_tolerances_fit(self):
@@ -84,7 +103,7 @@ class GenericFit(ABC):
 
     def build_fitting_model_peaks(self):
         """
-        Fits the lorentzians to the experimental data.
+        Builds the fitting model with parameters.
         It uses a quadraticModel to remove background noise, even though it is not the most important.
         :return:
 
@@ -93,11 +112,11 @@ class GenericFit(ABC):
         poly_type = self.other_data.get('poly_type')
         model, params = self.create_bkg_model()
         for i, cen in enumerate(self.peaks):
-            peak, pars = self.add_peak('lz%d' % (i + 1), cen, amplitude=self.dict_tolerances_fit['amplitude'],
-                                       sigma=self.dict_tolerances_fit['sigma'],
-                                       tolerance_center=self.dict_tolerances_fit['tolerance_center'],
-                                       min_max_amplitude=self.dict_tolerances_fit['min_max_amplitude'],
-                                       min_max_sigma=self.dict_tolerances_fit['min_max_sigma'])
+            peak, pars = self._add_peak('lz%d' % (i + 1), cen, amplitude=self.dict_tolerances_fit['amplitude'],
+                                        sigma=self.dict_tolerances_fit['sigma'],
+                                        tolerance_center=self.dict_tolerances_fit['tolerance_center'],
+                                        min_max_amplitude=self.dict_tolerances_fit['min_max_amplitude'],
+                                        min_max_sigma=self.dict_tolerances_fit['min_max_sigma'])
             model = model + peak
             params.update(pars)
 
@@ -108,7 +127,7 @@ class GenericFit(ABC):
         """
         Perform the fit
         """
-        result, components = self.fit_lorentzians(self.x, self.y, self.model, self.params)
+        result, components = self._fit_lorentzians(self.x, self.y, self.model, self.params)
         self.result = result
         self.components = components
 
@@ -153,15 +172,19 @@ class GenericFit(ABC):
         :return: model lmfit  for the bkg function.
         :return: params lmfit parameters to be adjusted.
         """
-        bkg_model = self.choose_bkg_model(self.other_data['poly_type'])
+        bkg_model = self._choose_bkg_model(self.other_data['poly_type'])
         model = bkg_model[0](**bkg_model[1])
         params = model.make_params(bkg_model[2])
 
         return model, params
 
+    #########
+    # the static methods in the following are basically the ones doing the tasks.
+    # The underscore is to treat them as private
+    #########
     @staticmethod
-    def add_peak(prefix, center, amplitude, sigma, tolerance_center,
-                 min_max_amplitude, min_max_sigma):
+    def _add_peak(prefix, center, amplitude, sigma, tolerance_center,
+                  min_max_amplitude, min_max_sigma):
         """
         adds a peak using a LorentzianModel from lmfit. Peaks can be summed as a linear combination
 
@@ -192,7 +215,7 @@ class GenericFit(ABC):
         return peak, pars
 
     @staticmethod
-    def fit_lorentzians(x, y, model, params):
+    def _fit_lorentzians(x, y, model, params):
         """
         Fits the lorentzians to the experimental data.
         It uses a quadraticModel to remove background noise, even though it is not the most important.
@@ -214,7 +237,7 @@ class GenericFit(ABC):
         return result, components
 
     @staticmethod
-    def choose_bkg_model(poly_type):
+    def _choose_bkg_model(poly_type):
         """
         Selects a bkg model for the fit. If not available, it will use the default quadratic.
 
@@ -241,7 +264,7 @@ class GenericFit(ABC):
         return bkg_model
 
     @staticmethod
-    def try_get_other_data(other_data, string_to_find, default_value):
+    def _try_get_other_data(other_data, string_to_find, default_value):
         """
         This method tries to get the default data for a given property. If it does not find it, the value returned
         will be the default one.
@@ -271,7 +294,7 @@ class GenericFit(ABC):
         return list_numbers
 
     @staticmethod
-    def sav_gol(intensity_data, win_size=11, poly_order=4):
+    def _sav_gol(intensity_data, win_size=11, poly_order=4):
         """
         applies the savgol_filter for a 1D data. set as static method for convenience.
         
@@ -284,7 +307,7 @@ class GenericFit(ABC):
         return data_smoothed
 
     @staticmethod
-    def normalize_data(intensity_data):
+    def _normalize_data(intensity_data):
         """
         Here we normalize as z = z - min(x)/(max(x)-min(x)).
         :param intensity_data

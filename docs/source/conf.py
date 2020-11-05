@@ -19,8 +19,7 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../../ramanpy'))
-# sys.path.insert(0, os.path.abspath('../../ramanpy_library'))
+# sys.path.insert(0, os.path.abspath('../../ramanpy/'))
 
 
 # -- General configuration ------------------------------------------------

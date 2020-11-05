@@ -13,7 +13,7 @@ def test_cleanup_header():
 def test_bkg_model_selection():
     # check if bkg model selection returns a tuple, ugly test, but ok...
     data = 'linear'
-    actual = GenericFit.choose_bkg_model(poly_type=data)
+    actual = GenericFit._choose_bkg_model(poly_type=data)
     expected = tuple
 
     assert isinstance(actual, expected)

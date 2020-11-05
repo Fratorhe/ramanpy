@@ -3,15 +3,13 @@ import string
 import numpy as np
 import pandas as pd
 from configobj import ConfigObj
-
-from . import RamanFit
+from ramanpy import RamanFit
 
 
 class ReadResultParamsFit:
     """
     A class to read a result file from fitting of raman/xrd spectra
-    This class is used in ResultsDataFrame to read the parameters, but can also be used independently
-    ...
+    This class is used in ResultsDataFrames to read the parameters, but can also be used independently
 
     Attributes
     ----------
@@ -28,12 +26,6 @@ class ReadResultParamsFit:
     lorentzians_stderr: dict
         same but the stderr, not really used.
 
-    Methods
-    -------
-    better_structure_params():
-        builds the dict of lorentzians and lorentzians_std with the names.
-    method1():
-        fits the lorentzians (from add_peak) to the data. Returns plot, print and report file.
     """
 
     def __init__(self, params_file, peaks_names=None):
@@ -47,7 +39,7 @@ class ReadResultParamsFit:
 
         # find number of lorentzians
         keys = self.dict_results.keys()
-        if peaks_names is None: # if the name of the peaks is not provided, generate some
+        if peaks_names is None:  # if the name of the peaks is not provided, generate some
             self.number_of_lorentzians = max(set([get_num(key) for key in keys]))
             self.peaks_names = list(string.ascii_lowercase)[0:self.number_of_lorentzians]
         else:
@@ -56,11 +48,12 @@ class ReadResultParamsFit:
 
         self.params_of_interest = ['fwhm', 'center', 'height']
 
-        self.lorentzians, self.lorentzians_stderr = self.better_structure_params()
+        self.lorentzians, self.lorentzians_stderr = self._better_structure_params()
 
-    def better_structure_params(self):
+    def _better_structure_params(self):
         """
         This is used to separate the average and the stderr from the reading of the lorentzians (_params.txt file)
+
         :return:
         """
         lorentzians = dict((key, {}) for key in self.peaks_names)
@@ -77,7 +70,7 @@ class ReadResultParamsFit:
         return lorentzians, lorentzians_stderr
 
 
-class ResultsDataFrame:
+class ResultsDataFrames:
     """
         A class to read multiple results from fitting of raman/xrd spectra
         Performs also typical calculations to obtain the equivalent La, intensity ratios, etc.
@@ -99,24 +92,8 @@ class ResultsDataFrame:
         peak_names: list
             list of names for the peaks
 
-        Methods
-        -------
-        to_csv():
-            print the data_pandas to a csv file
-        compute_statistics():
-            applies a statistic (avg, std) to a given column of the dataframe defined in _apply_statistics.
-            prints data to a file
-        _apply_statistics:
-            applies a statistic (avg, std)
-        compute_intensity_ratio_each_sample:
-            computes the D/G ratio for each sample
-        compute_equivalent_La:
-            computes the La as in Cancado et al
-        add_xypositions:
-            adds the xy position of the point to the data_pandas attribute
-        _read_xyz:
-            reads the coordinates in the experiment file to pass it to add_xypositions.
         """
+
     def __init__(self, file_names, peaks_names=None, sample_names=None):
         """
 
@@ -154,20 +131,21 @@ class ResultsDataFrame:
         """
         passes the current data_pandas to a dataframe. the use of unstacked is due to the inclusion of x and y positions
          (see add_xypositions)
+
         :param filename: file to dump the data. typically table_results.csv
         """
+        # TODO: re-impliment save in json instead of csv, it's just a headache.
         if self.unstacked:
             self.data_pandas.to_csv(filename)
         else:
             self.data_pandas.unstack().to_csv(filename)
-
-        # TODO: re-impliment save in json instead of csv, it's just a headache.
 
     def compute_statistics(self, filename=None):
         """
         computes the statistics defined in another function to each
         column and each peak for the different samples
         it will print them to a file and return them here as a dictionary
+
         :param filename: file to be saved
         :return: dict of data
         """
@@ -208,6 +186,7 @@ class ResultsDataFrame:
     def _apply_statistics(data):
         """
         Apply any stadistics to the data.
+
         :param data: dataframe with intensities for example.
         :return: dictionary with the results.
         """
@@ -220,6 +199,7 @@ class ResultsDataFrame:
     def compute_intensity_ratio_each_sample(self, file_to_save=None):
         """
         computes the intensity ratio as D/G
+
         :param file_to_save: filename to save the dataframe (table_results.csv)
         :return: self.intensity ratios. A set with the ratio values.
         """
@@ -254,9 +234,10 @@ class ResultsDataFrame:
         the laser wavelength is typically 532 nm
         The result is also in nm.
         *WARNING*: this method considers that this one compute_intensity_ratio_each_sample has been run before.
-        :return: La: the set of computed equivalent La
+
         :param Lambda: wavelength of the laser
         :param file_to_save: filename of to save to
+        :return: La: the set of computed equivalent La
         """
         La = {}
         for sample in self.sample_names:
@@ -292,6 +273,7 @@ class ResultsDataFrame:
     def _read_xyz(filename):
         '''
         Function to read the xyz positions from the header.
+
         :param filename: str name of file
         :return: list
         '''
@@ -308,6 +290,7 @@ class ResultsDataFrame:
 def get_num(string_with_number):
     """
     get numbers in a string
+
     :param string_with_number:
     :return:
     """

@@ -11,20 +11,8 @@ class RamanFit(GenericFit):
     """
     A class to fit raman spectra
 
-    ...
-
     Attributes
     ----------
-    data : df
-        experimental data
-    metadata : list
-        metadata from the experiments
-    peaks : list
-        list of peaks to be fit
-    other_data : configObj
-        as it says...other data that could be parsed, so far, almost empty
-    folder_out: str
-        folder to save the reports from the fit
     var_x: str
         variable name for x, usually wavenumber, for plot only
     var_y: str
@@ -34,12 +22,6 @@ class RamanFit(GenericFit):
     y: list
         data y, in this case, intensity
 
-    Methods
-    -------
-    read_data_raman(file_to_analyze):
-        reads the data and dumps in pandas dataframe
-    fit_lorentzians():
-        fits the lorentzians (from add_peak) to the data. Returns plot, print and report file.
     """
 
     def __init__(self, file_to_analyze, peaks, other_data=None, folder_out=None):
@@ -80,12 +62,21 @@ class RamanFit(GenericFit):
     def reader_single_point(filename, normalize=False, remove_offset=False):
         """
         Reader for raman spectrometry files of a single location.
-        :param filename: str with filename
-        :param normalize: bool. Normalize to maximum (max of the counts will be 1)
-        :param remove_offset: bool. Remove linear offset using detrend from scipy. Mostly for visualization
-        :return:
-            :data: pandas dataframe with two columns: wavenumber and intensity
-            :header: metadata from the measurement
+
+        Parameters
+        ----------
+        filename: str
+                with filename
+        normalize: bool
+                Normalize to maximum (max of the counts will be 1)
+
+        remove_offset:bool
+                Remove linear offset using detrend from scipy. Mostly for visualization
+
+        Returns
+        -------------
+        data: pandas dataframe with two columns: wavenumber and intensity
+        header: metadata from the measurement
         """
         data = pd.read_csv(filename, comment='#', sep='\t', index_col=False, names=['wavenumber', 'intensity'])
         header = RamanFit.read_header(filename=filename)
@@ -98,11 +89,15 @@ class RamanFit(GenericFit):
         return data, header
 
     def set_tolerances_fit(self):
-        min_max_amplitude = self.try_get_other_data(self.other_data, 'min_max_amplitude', default_value=(0, 200))
-        min_max_sigma = self.try_get_other_data(self.other_data, 'min_max_sigma', default_value=(0, 200))
-        tolerance_center = self.try_get_other_data(self.other_data, 'peak_center_tolerance', default_value=(10,))[0]
-        amplitude = self.try_get_other_data(self.other_data, 'amplitude', default_value=(10,))[0]
-        sigma = self.try_get_other_data(self.other_data, 'sigma', default_value=(10,))[0]
+        """
+        This method tries to get the tolerances for the fit. If it does not find, will use some default ones.
+
+        """
+        min_max_amplitude = self._try_get_other_data(self.other_data, 'min_max_amplitude', default_value=(0, 200))
+        min_max_sigma = self._try_get_other_data(self.other_data, 'min_max_sigma', default_value=(0, 200))
+        tolerance_center = self._try_get_other_data(self.other_data, 'peak_center_tolerance', default_value=(10,))[0]
+        amplitude = self._try_get_other_data(self.other_data, 'amplitude', default_value=(10,))[0]
+        sigma = self._try_get_other_data(self.other_data, 'sigma', default_value=(10,))[0]
 
         self.dict_tolerances_fit = {
             'min_max_amplitude': min_max_amplitude,
@@ -117,20 +112,9 @@ class XRDFit(GenericFit):
     """
     A class to fit XRD spectra
 
-    ...
 
     Attributes
     ----------
-    data : df
-        experimental data
-    metadata : list
-        metadata from the experiments
-    peaks : list
-        list of peaks to be fit
-    other_data : configObj
-        as it says...other data that could be parsed, so far, almost empty
-    folder_out: str
-        folder to save the reports from the fit
     var_x: str
         variable name for x, usually angle, for plot only
     var_y: str
@@ -140,12 +124,6 @@ class XRDFit(GenericFit):
     y: list
         data y, in this case, intensity
 
-    Methods
-    -------
-    read_data_XRD(file_to_analyze):
-        reads the data and dumps in pandas dataframe
-    fit_lorentzians():
-        fits the lorentzians (from add_peak) to the data. Returns plot, print and report file.
     """
 
     def __init__(self, file_to_analyze, peaks, other_data=None, folder_out=None):
@@ -162,11 +140,18 @@ class XRDFit(GenericFit):
     def read_data_xrd(filename, normalize=False):
         """
         Reader for XRD files.
-        :param normalize: bool
-        :param filename: str with filename
-        :return:
-            :data: pandas dataframe with two columns: angle and intensity
-            :header: metadata from the measurement
+
+        Parameters
+        ----------
+        filename: str
+                with filename
+        normalize: bool
+                Normalize to maximum (max of the counts will be 1)
+
+        Returns
+        -------------
+        data: pandas dataframe with two columns: angle and intensity
+        header: metadata from the measurement
         """
         data = pd.read_csv(filename, skiprows=1, comment='#', delim_whitespace=True,
                            index_col=False, names=['angle', 'intensity'])
@@ -178,11 +163,15 @@ class XRDFit(GenericFit):
         return data, header
 
     def set_tolerances_fit(self):
-        min_max_amplitude = self.try_get_other_data(self.other_data, 'min_max_amplitude', default_value=(0, 10))
-        min_max_sigma = self.try_get_other_data(self.other_data, 'min_max_sigma', default_value=(0, 10))
-        tolerance_center = self.try_get_other_data(self.other_data, 'peak_center_tolerance', default_value=(5,))[0]
-        amplitude = self.try_get_other_data(self.other_data, 'peak_center_tolerance', default_value=(10,))[0]
-        sigma = self.try_get_other_data(self.other_data, 'peak_center_tolerance', default_value=(10,))[0]
+        """
+        This method tries to get the tolerances for the fit. If it does not find, will use some default ones.
+
+        """
+        min_max_amplitude = self._try_get_other_data(self.other_data, 'min_max_amplitude', default_value=(0, 10))
+        min_max_sigma = self._try_get_other_data(self.other_data, 'min_max_sigma', default_value=(0, 10))
+        tolerance_center = self._try_get_other_data(self.other_data, 'peak_center_tolerance', default_value=(5,))[0]
+        amplitude = self._try_get_other_data(self.other_data, 'peak_center_tolerance', default_value=(10,))[0]
+        sigma = self._try_get_other_data(self.other_data, 'peak_center_tolerance', default_value=(10,))[0]
 
         self.dict_tolerances_fit = {
             'min_max_amplitude': min_max_amplitude,
