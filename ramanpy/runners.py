@@ -2,6 +2,16 @@ from ramanpy import RamanFit, XRDFit
 
 
 def raman_run_carbon(file_to_analyze, file_peaks):
+    """
+    Runner for carbon typical Raman case.
+
+    Parameters
+    ------------
+    file_to_analyze: str
+        name of the file to analyze
+    file_peaks: str
+        name of the peaks file, if not provided, use the default one.
+    """
     # get already the default peaks file in case...
     default_peaks_file = 'raman_linear_carbon.ini'
 
@@ -19,6 +29,16 @@ def raman_run_carbon(file_to_analyze, file_peaks):
 
 
 def xrd_run_carbon(file_to_analyze, file_peaks):
+    """
+    Runner for carbon typical XRD case.
+
+    Parameters
+    ------------
+    file_to_analyze: str
+        name of the file to analyze
+    file_peaks: str
+        name of the peaks file, if not provided, use the default one.
+    """
     # get already the default peaks file in case...
     default_peaks_file = 'XRD_linear_carbon.ini'
 

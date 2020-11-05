@@ -26,7 +26,7 @@ class GenericFit(ABC):
         :param experimental_data: df with experimental data
         :param peaks: list of peaks to be retrieved
         :param other_data: if needed
-        :param folder_out folder where report will be saved. 
+        :param folder_out folder where report will be saved.
         """
 
         if peaks is None:

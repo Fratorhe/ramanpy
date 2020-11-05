@@ -1,6 +1,5 @@
-=====
-Usage
-=====
+Step by step
+=====================
 
 Start by importing ramanpy as rp
 
