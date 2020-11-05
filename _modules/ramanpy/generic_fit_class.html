@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ramanpy.generic_fit_class &mdash; ramanpy 0.post20+g0b1b23b documentation</title>
+  <title>ramanpy.generic_fit_class &mdash; ramanpy 0.post21+gdf949fa documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.post20+g0b1b23b
+                0.post21+gdf949fa
               </div>
             
           
@@ -272,7 +272,6 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">poly_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">other_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;poly_type&#39;</span><span class="p">)</span>
         <span class="n">model</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_bkg_model</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">cen</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">peaks</span><span class="p">):</span>
             <span class="n">peak</span><span class="p">,</span> <span class="n">pars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_peak</span><span class="p">(</span><span class="s1">&#39;lz</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">cen</span><span class="p">,</span> <span class="n">amplitude</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dict_tolerances_fit</span><span class="p">[</span><span class="s1">&#39;amplitude&#39;</span><span class="p">],</span>
@@ -486,7 +485,7 @@
         <span class="k">return</span> <span class="n">intensity_data_scaled</span>
 
 <div class="viewcode-block" id="GenericFit.read_otherdata_configfile"><a class="viewcode-back" href="../../classes.html#ramanpy.GenericFit.read_otherdata_configfile">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">read_otherdata_configfile</span><span class="p">(</span><span class="n">config_file</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_otherdata_configfile</span><span class="p">(</span><span class="n">config_file</span><span class="p">,</span> <span class="n">default_config_file</span><span class="p">,</span> <span class="n">default_folder</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Read if there is any extra data in the configfile</span>
 
@@ -497,7 +496,12 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">config</span> <span class="o">=</span> <span class="n">ConfigObj</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>
-        <span class="n">other_data</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;other data&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">other_data</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;other data&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">other_data</span><span class="p">:</span>
+            <span class="n">default_folder</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span> <span class="o">/</span> <span class="s1">&#39;peak_files&#39;</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">ConfigObj</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">default_folder</span> <span class="o">/</span> <span class="n">default_config_file</span><span class="p">))</span>
+            <span class="n">other_data</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;other data&#39;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">other_data</span></div>
 
@@ -511,7 +515,7 @@
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">default_folder</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">default_folder</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+            <span class="n">default_folder</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span> <span class="o">/</span> <span class="s1">&#39;peak_files&#39;</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">config</span> <span class="o">=</span> <span class="n">ConfigObj</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>

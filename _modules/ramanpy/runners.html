@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ramanpy.runners &mdash; ramanpy 0.post20+g0b1b23b documentation</title>
+  <title>ramanpy.runners &mdash; ramanpy 0.post21+gdf949fa documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.post20+g0b1b23b
+                0.post21+gdf949fa
               </div>
             
           
@@ -206,7 +206,7 @@
     <span class="n">default_peaks_file</span> <span class="o">=</span> <span class="s1">&#39;XRD_linear_carbon.ini&#39;</span>
 
     <span class="n">peaks</span> <span class="o">=</span> <span class="n">XRDFit</span><span class="o">.</span><span class="n">read_peaks_configfile</span><span class="p">(</span><span class="n">file_peaks</span><span class="p">,</span> <span class="n">default_peaks_file</span><span class="o">=</span><span class="n">default_peaks_file</span><span class="p">)</span>
-    <span class="n">other_data</span> <span class="o">=</span> <span class="n">XRDFit</span><span class="o">.</span><span class="n">read_otherdata_configfile</span><span class="p">(</span><span class="n">file_peaks</span><span class="p">)</span>
+    <span class="n">other_data</span> <span class="o">=</span> <span class="n">XRDFit</span><span class="o">.</span><span class="n">read_otherdata_configfile</span><span class="p">(</span><span class="n">file_peaks</span><span class="p">,</span><span class="n">default_config_file</span><span class="o">=</span><span class="n">default_peaks_file</span><span class="p">)</span>
     <span class="n">xrd_carbon</span> <span class="o">=</span> <span class="n">XRDFit</span><span class="p">(</span><span class="n">file_to_analyze</span><span class="o">=</span><span class="n">file_to_analyze</span><span class="p">,</span> <span class="n">peaks</span><span class="o">=</span><span class="n">peaks</span><span class="p">,</span> <span class="n">other_data</span><span class="o">=</span><span class="n">other_data</span><span class="p">)</span>
 
     <span class="n">xrd_carbon</span><span class="o">.</span><span class="n">apply_smoothing</span><span class="p">()</span>
