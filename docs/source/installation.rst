@@ -2,9 +2,9 @@
 Installation
 ============
 
-At the command line::
+On command line (in developer mode)::
 
-    $ pip install .
+    $ pip install -e .
 
 Or (if ever in PyPI):
     $ pip install ramanpy
