@@ -2,11 +2,13 @@
 Usage
 =====
 
-Start by importing ramanpy.
+Start by importing ramanpy as rp
 
 .. code-block:: python
 
-    import ramanpy
+    import ramanpy as rp
+
+The first step is to
 
 
 
