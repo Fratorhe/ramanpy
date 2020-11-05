@@ -1,0 +1,366 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Post-processing Classes &mdash; ramanpy 0.post20+g0b1b23b documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Release History" href="release-history.html" />
+    <link rel="prev" title="Fitting Classes" href="classes.html" />
+    <link href="_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> ramanpy
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.post20+g0b1b23b
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Step by step</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage-runners.html">Runners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="post-processing-example.html">Post-processing Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes.html">Fitting Classes</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Post-processing Classes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#multiple-files">Multiple files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#single-file">Single file</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="release-history.html">Release History</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">ramanpy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Post-processing Classes</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/post-processing.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="post-processing-classes">
+<h1>Post-processing Classes<a class="headerlink" href="#post-processing-classes" title="Permalink to this headline">¶</a></h1>
+<p>We can either process a single file, or multiple files.</p>
+<div class="section" id="multiple-files">
+<h2>Multiple files<a class="headerlink" href="#multiple-files" title="Permalink to this headline">¶</a></h2>
+<p>To read multiple files, we use the class <a class="reference internal" href="#ramanpy.ResultsDataFrames" title="ramanpy.ResultsDataFrames"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ramanpy.ResultsDataFrames()</span></code></a>. This class, internally
+uses <a class="reference internal" href="#ramanpy.ReadResultParamsFit" title="ramanpy.ReadResultParamsFit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ramanpy.ReadResultParamsFit()</span></code></a> to read each result file.
+The idea is to have here everything needed to compute for example the intensity ratio.</p>
+<dl class="py class">
+<dt id="ramanpy.ResultsDataFrames">
+<em class="property">class </em><code class="sig-prename descclassname">ramanpy.</code><code class="sig-name descname">ResultsDataFrames</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file_names</span></em>, <em class="sig-param"><span class="n">peaks_names</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">sample_names</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ramanpy/process_results_raman.html#ResultsDataFrames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramanpy.ResultsDataFrames" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class to read multiple results from fitting of raman/xrd spectra
+Performs also typical calculations to obtain the equivalent La, intensity ratios, etc.</p>
+<p>…</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>file_names_params</strong><span class="classifier">list</span></dt><dd><p>names of the _params.txt files</p>
+</dd>
+<dt><strong>file_names_experiment: list</strong></dt><dd><p>name of the base files (experimental raw data)</p>
+</dd>
+<dt><strong>sample_names: list</strong></dt><dd><p>same as file_names_experiment but without extension</p>
+</dd>
+<dt><strong>data_dict: dict of obj ReadResultsRamanFit</strong></dt><dd><p>data from all the params files read</p>
+</dd>
+<dt><strong>data_pandas: pandas</strong></dt><dd><p>same as data_dict, but in a pandas dataframe</p>
+</dd>
+<dt><strong>peak_names: list</strong></dt><dd><p>list of names for the peaks</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="ramanpy.ResultsDataFrames.add_xypositions">
+<code class="sig-name descname">add_xypositions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ramanpy/process_results_raman.html#ResultsDataFrames.add_xypositions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramanpy.ResultsDataFrames.add_xypositions" title="Permalink to this definition">¶</a></dt>
+<dd><p>adds the x, y position of the raman measurement to the dataframe in order to be output in table_results</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ramanpy.ResultsDataFrames.compute_equivalent_La">
+<code class="sig-name descname">compute_equivalent_La</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Lambda</span><span class="o">=</span><span class="default_value">532</span></em>, <em class="sig-param"><span class="n">file_to_save</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ramanpy/process_results_raman.html#ResultsDataFrames.compute_equivalent_La"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramanpy.ResultsDataFrames.compute_equivalent_La" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the equivalent La from the formula of Cancado 2006
+La = (2.4*10**(-10))*Lambda**4*(I_D/I_G)**-1
+the laser wavelength is typically 532 nm
+The result is also in nm.
+<em>WARNING</em>: this method considers that this one compute_intensity_ratio_each_sample has been run before.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Lambda</strong> – wavelength of the laser</p></li>
+<li><p><strong>file_to_save</strong> – filename of to save to</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>La: the set of computed equivalent La</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ramanpy.ResultsDataFrames.compute_intensity_ratio_each_sample">
+<code class="sig-name descname">compute_intensity_ratio_each_sample</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file_to_save</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ramanpy/process_results_raman.html#ResultsDataFrames.compute_intensity_ratio_each_sample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramanpy.ResultsDataFrames.compute_intensity_ratio_each_sample" title="Permalink to this definition">¶</a></dt>
+<dd><p>computes the intensity ratio as D/G</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>file_to_save</strong> – filename to save the dataframe (table_results.csv)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>self.intensity ratios. A set with the ratio values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ramanpy.ResultsDataFrames.compute_statistics">
+<code class="sig-name descname">compute_statistics</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ramanpy/process_results_raman.html#ResultsDataFrames.compute_statistics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramanpy.ResultsDataFrames.compute_statistics" title="Permalink to this definition">¶</a></dt>
+<dd><p>computes the statistics defined in another function to each
+column and each peak for the different samples
+it will print them to a file and return them here as a dictionary</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> – file to be saved</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>dict of data</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ramanpy.ResultsDataFrames.to_csv">
+<code class="sig-name descname">to_csv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ramanpy/process_results_raman.html#ResultsDataFrames.to_csv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramanpy.ResultsDataFrames.to_csv" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>passes the current data_pandas to a dataframe. the use of unstacked is due to the inclusion of x and y positions</dt><dd><p>(see add_xypositions)</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> – file to dump the data. typically table_results.csv</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="single-file">
+<h2>Single file<a class="headerlink" href="#single-file" title="Permalink to this headline">¶</a></h2>
+<p>To read the results of a single file, we use the class <a class="reference internal" href="#ramanpy.ReadResultParamsFit" title="ramanpy.ReadResultParamsFit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ramanpy.ReadResultParamsFit()</span></code></a>. This should work for both
+Raman and XRD.
+However, most of the time we will process several files at once so this is not really important.</p>
+<dl class="py class">
+<dt id="ramanpy.ReadResultParamsFit">
+<em class="property">class </em><code class="sig-prename descclassname">ramanpy.</code><code class="sig-name descname">ReadResultParamsFit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">params_file</span></em>, <em class="sig-param"><span class="n">peaks_names</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ramanpy/process_results_raman.html#ReadResultParamsFit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramanpy.ReadResultParamsFit" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class to read a result file from fitting of raman/xrd spectra
+This class is used in ResultsDataFrames to read the parameters, but can also be used independently</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>dict_results</strong><span class="classifier">dict</span></dt><dd><p>dictionary with the results from the fit, read from the _params.txt file</p>
+</dd>
+<dt><strong>number_of_lorentzians: int</strong></dt><dd><p>number of lorentzian peaks</p>
+</dd>
+<dt><strong>peaks_names: list</strong></dt><dd><p>names for the peaks (typically D, G, G’)</p>
+</dd>
+<dt><strong>params_of_interest: list</strong></dt><dd><p>parameters to be studied fwhm, center, height</p>
+</dd>
+<dt><strong>lorentzians: dict</strong></dt><dd><p>dict with peaks_names and values from dict_results</p>
+</dd>
+<dt><strong>lorentzians_stderr: dict</strong></dt><dd><p>same but the stderr, not really used.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="release-history.html" class="btn btn-neutral float-right" title="Release History" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="classes.html" class="btn btn-neutral float-left" title="Fitting Classes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Francisco Torres-Herrador
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

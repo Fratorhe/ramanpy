@@ -1,0 +1,512 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ramanpy.process_results_raman &mdash; ramanpy 0.post20+g0b1b23b documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link href="../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> ramanpy
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.post20+g0b1b23b
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Step by step</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage-runners.html">Runners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../post-processing-example.html">Post-processing Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../classes.html">Fitting Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../post-processing.html">Post-processing Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release-history.html">Release History</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">ramanpy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>ramanpy.process_results_raman</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ramanpy.process_results_raman</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">string</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">configobj</span> <span class="kn">import</span> <span class="n">ConfigObj</span>
+<span class="kn">from</span> <span class="nn">ramanpy</span> <span class="kn">import</span> <span class="n">RamanFit</span>
+
+
+<div class="viewcode-block" id="ReadResultParamsFit"><a class="viewcode-back" href="../../post-processing.html#ramanpy.ReadResultParamsFit">[docs]</a><span class="k">class</span> <span class="nc">ReadResultParamsFit</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class to read a result file from fitting of raman/xrd spectra</span>
+<span class="sd">    This class is used in ResultsDataFrames to read the parameters, but can also be used independently</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dict_results : dict</span>
+<span class="sd">        dictionary with the results from the fit, read from the _params.txt file</span>
+<span class="sd">    number_of_lorentzians: int</span>
+<span class="sd">        number of lorentzian peaks</span>
+<span class="sd">    peaks_names: list</span>
+<span class="sd">        names for the peaks (typically D, G, G&#39;)</span>
+<span class="sd">    params_of_interest: list</span>
+<span class="sd">        parameters to be studied fwhm, center, height</span>
+<span class="sd">    lorentzians: dict</span>
+<span class="sd">        dict with peaks_names and values from dict_results</span>
+<span class="sd">    lorentzians_stderr: dict</span>
+<span class="sd">        same but the stderr, not really used.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params_file</span><span class="p">,</span> <span class="n">peaks_names</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param params_file: filename with the results of the fit</span>
+<span class="sd">        :param peaks_names: names for the peaks (D, G, etc)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># print(params_file)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dict_results</span> <span class="o">=</span> <span class="n">ConfigObj</span><span class="p">(</span><span class="n">params_file</span><span class="p">,</span> <span class="n">file_error</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># find number of lorentzians</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_results</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">peaks_names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># if the name of the peaks is not provided, generate some</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">number_of_lorentzians</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="n">get_num</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">]))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">peaks_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">ascii_lowercase</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_lorentzians</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">number_of_lorentzians</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">peaks_names</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">peaks_names</span> <span class="o">=</span> <span class="n">peaks_names</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">params_of_interest</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;fwhm&#39;</span><span class="p">,</span> <span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">lorentzians</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lorentzians_stderr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_better_structure_params</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_better_structure_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This is used to separate the average and the stderr from the reading of the lorentzians (_params.txt file)</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">lorentzians</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">key</span><span class="p">,</span> <span class="p">{})</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">peaks_names</span><span class="p">)</span>
+        <span class="n">lorentzians_stderr</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">key</span><span class="p">,</span> <span class="p">{})</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">peaks_names</span><span class="p">)</span>
+
+        <span class="c1"># build word</span>
+        <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">params_of_interest</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">num</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">peaks_names</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_of_lorentzians</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)):</span>
+                <span class="n">key_dict</span> <span class="o">=</span> <span class="s1">&#39;lz&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">num</span><span class="p">)</span> <span class="o">+</span> <span class="n">parameter</span>
+                <span class="n">value_in_dict_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_results</span><span class="p">[</span><span class="n">key_dict</span><span class="p">]</span>
+
+                <span class="n">lorentzians</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="n">parameter</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value_in_dict_results</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">lorentzians</span><span class="p">,</span> <span class="n">lorentzians_stderr</span></div>
+
+
+<div class="viewcode-block" id="ResultsDataFrames"><a class="viewcode-back" href="../../post-processing.html#ramanpy.ResultsDataFrames">[docs]</a><span class="k">class</span> <span class="nc">ResultsDataFrames</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A class to read multiple results from fitting of raman/xrd spectra</span>
+<span class="sd">        Performs also typical calculations to obtain the equivalent La, intensity ratios, etc.</span>
+
+<span class="sd">        ...</span>
+
+<span class="sd">        Attributes</span>
+<span class="sd">        ----------</span>
+<span class="sd">        file_names_params : list</span>
+<span class="sd">            names of the _params.txt files</span>
+<span class="sd">        file_names_experiment: list</span>
+<span class="sd">            name of the base files (experimental raw data)</span>
+<span class="sd">        sample_names: list</span>
+<span class="sd">            same as file_names_experiment but without extension</span>
+<span class="sd">        data_dict: dict of obj ReadResultsRamanFit</span>
+<span class="sd">            data from all the params files read</span>
+<span class="sd">        data_pandas: pandas</span>
+<span class="sd">            same as data_dict, but in a pandas dataframe</span>
+<span class="sd">        peak_names: list</span>
+<span class="sd">            list of names for the peaks</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_names</span><span class="p">,</span> <span class="n">peaks_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sample_names</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param file_names: file names without &quot;_params.txt&quot; this will be added inside</span>
+<span class="sd">        :param peaks_names: for the lorentzians, if not given, it will be letters</span>
+<span class="sd">        :param sample_names: for the dataframe, if not given, it will equal to file_names</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_names_params</span> <span class="o">=</span> <span class="p">[</span><span class="n">file_to_process</span> <span class="o">+</span> <span class="s1">&#39;_params.txt&#39;</span> <span class="k">for</span> <span class="n">file_to_process</span> <span class="ow">in</span> <span class="n">file_names</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_names_experiment</span> <span class="o">=</span> <span class="p">[</span><span class="n">file_to_process</span> <span class="o">+</span> <span class="s1">&#39;.txt&#39;</span> <span class="k">for</span> <span class="n">file_to_process</span> <span class="ow">in</span> <span class="n">file_names</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">sample_names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sample_names</span> <span class="o">=</span> <span class="n">file_names</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sample_names</span> <span class="o">=</span> <span class="n">sample_names</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">peak_names</span> <span class="o">=</span> <span class="n">peaks_names</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">file_name_param</span><span class="p">,</span> <span class="n">sample_name</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_names_params</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_names</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">sample_name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_dict</span><span class="p">[</span><span class="n">sample_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">ReadResultParamsFit</span><span class="p">(</span><span class="n">file_name_param</span><span class="p">,</span> <span class="n">peaks_names</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">peak_names</span><span class="p">)</span><span class="o">.</span><span class="n">lorentzians</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_pandas</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">({</span><span class="n">k</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">T</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()},</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># ensure we get the right peak_names back from the ReadResultParamsFit.</span>
+        <span class="c1"># if they are provided it is a repetition, otherwise it will set them here, because they were set to None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">peak_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_pandas</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">levels</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+        <span class="c1"># Get the column names ie. variables to be analyzed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cols_dataframe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_pandas</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">unstacked</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># dirty trick to unstack only once</span>
+
+<div class="viewcode-block" id="ResultsDataFrames.to_csv"><a class="viewcode-back" href="../../post-processing.html#ramanpy.ResultsDataFrames.to_csv">[docs]</a>    <span class="k">def</span> <span class="nf">to_csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        passes the current data_pandas to a dataframe. the use of unstacked is due to the inclusion of x and y positions</span>
+<span class="sd">         (see add_xypositions)</span>
+
+<span class="sd">        :param filename: file to dump the data. typically table_results.csv</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO: re-impliment save in json instead of csv, it&#39;s just a headache.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">unstacked</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_pandas</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_pandas</span><span class="o">.</span><span class="n">unstack</span><span class="p">()</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ResultsDataFrames.compute_statistics"><a class="viewcode-back" href="../../post-processing.html#ramanpy.ResultsDataFrames.compute_statistics">[docs]</a>    <span class="k">def</span> <span class="nf">compute_statistics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        computes the statistics defined in another function to each</span>
+<span class="sd">        column and each peak for the different samples</span>
+<span class="sd">        it will print them to a file and return them here as a dictionary</span>
+
+<span class="sd">        :param filename: file to be saved</span>
+<span class="sd">        :return: dict of data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># create the idx variable for better indexing in multiindex pandas</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">IndexSlice</span>  <span class="c1"># this helps for the multiindexing</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dict_stats</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="c1"># compute for each peak</span>
+        <span class="k">for</span> <span class="n">peak</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">peak_names</span><span class="p">:</span>
+            <span class="c1"># compute for each variable of interest (center, height, fwhm)</span>
+            <span class="n">dict_stats_data</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cols_dataframe</span><span class="p">:</span>
+                <span class="c1"># grab the data</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_pandas</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">[:,</span> <span class="n">peak</span><span class="p">],</span> <span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+
+                <span class="c1"># compute statistics and put them in a dict</span>
+                <span class="n">dict_stats_data</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_statistics</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+            <span class="c1"># combine all the stats into one</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dict_stats</span><span class="p">[</span><span class="n">peak</span><span class="p">]</span> <span class="o">=</span> <span class="n">dict_stats_data</span>
+
+        <span class="c1"># To dump in a ConfigObj</span>
+        <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dump_file</span> <span class="o">=</span> <span class="n">ConfigObj</span><span class="p">(</span><span class="n">indent_type</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">dump_file</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
+
+            <span class="k">for</span> <span class="n">peak</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">peak_names</span><span class="p">:</span>
+                <span class="c1"># compute for each variable of interest (center, height, fwhm)</span>
+                <span class="n">dump_file</span><span class="p">[</span><span class="n">peak</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cols_dataframe</span><span class="p">:</span>
+                    <span class="n">dump_file</span><span class="p">[</span><span class="n">peak</span><span class="p">][</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_stats</span><span class="p">[</span><span class="n">peak</span><span class="p">][</span><span class="n">column</span><span class="p">]</span>
+            <span class="n">dump_file</span><span class="o">.</span><span class="n">write</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_stats</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_apply_statistics</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply any stadistics to the data.</span>
+
+<span class="sd">        :param data: dataframe with intensities for example.</span>
+<span class="sd">        :return: dictionary with the results.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">average</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="n">dict_stats_data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;average&#39;</span><span class="p">:</span> <span class="n">average</span><span class="p">,</span> <span class="s1">&#39;std&#39;</span><span class="p">:</span> <span class="n">std</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">dict_stats_data</span>
+
+<div class="viewcode-block" id="ResultsDataFrames.compute_intensity_ratio_each_sample"><a class="viewcode-back" href="../../post-processing.html#ramanpy.ResultsDataFrames.compute_intensity_ratio_each_sample">[docs]</a>    <span class="k">def</span> <span class="nf">compute_intensity_ratio_each_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_to_save</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        computes the intensity ratio as D/G</span>
+
+<span class="sd">        :param file_to_save: filename to save the dataframe (table_results.csv)</span>
+<span class="sd">        :return: self.intensity ratios. A set with the ratio values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># create the idx variable for better indexing in multiindex pandas</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">IndexSlice</span>  <span class="c1"># this helps for the multiindexing</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">intensity_ratios</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">sample</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_names</span><span class="p">:</span>
+            <span class="c1"># grab the data</span>
+            <span class="n">D_band</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_pandas</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="n">sample</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">],</span> <span class="s1">&#39;height&#39;</span><span class="p">]</span>
+            <span class="n">G_band</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_pandas</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="n">sample</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">],</span> <span class="s1">&#39;height&#39;</span><span class="p">]</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">intensity_ratios</span><span class="p">[</span><span class="n">sample</span><span class="p">]</span> <span class="o">=</span> <span class="n">D_band</span> <span class="o">/</span> <span class="n">G_band</span>
+
+        <span class="k">if</span> <span class="n">file_to_save</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># TODO: move this somewhere else</span>
+            <span class="n">dump_file</span> <span class="o">=</span> <span class="n">ConfigObj</span><span class="p">(</span><span class="n">indent_type</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">dump_file</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">file_to_save</span>
+
+            <span class="k">for</span> <span class="n">sample</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_names</span><span class="p">:</span>
+                <span class="c1"># compute for each variable of interest (center, height, fwhm)</span>
+                <span class="n">dump_file</span><span class="p">[</span><span class="n">sample</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">intensity_ratios</span><span class="p">[</span><span class="n">sample</span><span class="p">]</span>
+            <span class="n">dump_file</span><span class="o">.</span><span class="n">write</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">intensity_ratios</span></div>
+
+<div class="viewcode-block" id="ResultsDataFrames.compute_equivalent_La"><a class="viewcode-back" href="../../post-processing.html#ramanpy.ResultsDataFrames.compute_equivalent_La">[docs]</a>    <span class="k">def</span> <span class="nf">compute_equivalent_La</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Lambda</span><span class="o">=</span><span class="mi">532</span><span class="p">,</span> <span class="n">file_to_save</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes the equivalent La from the formula of Cancado 2006</span>
+<span class="sd">        La = (2.4*10**(-10))*Lambda**4*(I_D/I_G)**-1</span>
+<span class="sd">        the laser wavelength is typically 532 nm</span>
+<span class="sd">        The result is also in nm.</span>
+<span class="sd">        *WARNING*: this method considers that this one compute_intensity_ratio_each_sample has been run before.</span>
+
+<span class="sd">        :param Lambda: wavelength of the laser</span>
+<span class="sd">        :param file_to_save: filename of to save to</span>
+<span class="sd">        :return: La: the set of computed equivalent La</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">La</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">sample</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_names</span><span class="p">:</span>
+            <span class="n">La</span><span class="p">[</span><span class="n">sample</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">2.4</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">))</span> <span class="o">*</span> <span class="n">Lambda</span> <span class="o">**</span> <span class="mi">4</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">intensity_ratios</span><span class="p">[</span><span class="n">sample</span><span class="p">])</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">file_to_save</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dump_file</span> <span class="o">=</span> <span class="n">ConfigObj</span><span class="p">(</span><span class="n">indent_type</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">dump_file</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">file_to_save</span>
+
+            <span class="k">for</span> <span class="n">sample</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_names</span><span class="p">:</span>
+                <span class="c1"># compute for each variable of interest (center, height, fwhm)</span>
+                <span class="n">dump_file</span><span class="p">[</span><span class="n">sample</span><span class="p">]</span> <span class="o">=</span> <span class="n">La</span><span class="p">[</span><span class="n">sample</span><span class="p">]</span>
+            <span class="n">dump_file</span><span class="o">.</span><span class="n">write</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">La</span></div>
+
+<div class="viewcode-block" id="ResultsDataFrames.add_xypositions"><a class="viewcode-back" href="../../post-processing.html#ramanpy.ResultsDataFrames.add_xypositions">[docs]</a>    <span class="k">def</span> <span class="nf">add_xypositions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        adds the x, y position of the raman measurement to the dataframe in order to be output in table_results</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x_positions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">y_positions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_pandas</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_pandas</span><span class="o">.</span><span class="n">unstack</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unstacked</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_names_experiment</span><span class="p">:</span>
+            <span class="n">positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_xyz</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">)</span>
+            <span class="n">x_positions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">positions</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">y_positions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">positions</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_pandas</span><span class="p">[</span><span class="s1">&#39;x(um)&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_positions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_pandas</span><span class="p">[</span><span class="s1">&#39;y(um)&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_positions</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_read_xyz</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Function to read the xyz positions from the header.</span>
+
+<span class="sd">        :param filename: str name of file</span>
+<span class="sd">        :return: list</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="n">RamanFit</span><span class="o">.</span><span class="n">read_header</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">)</span>
+        <span class="n">axis</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="s1">&#39;Z&#39;</span><span class="p">]</span>
+        <span class="n">positions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">axis</span><span class="p">:</span>
+            <span class="n">position</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span>
+                <span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">element</span><span class="si">}</span><span class="s1">(µm)&#39;</span><span class="p">,</span> <span class="s1">&#39;nan&#39;</span><span class="p">))</span>  <span class="c1"># get the position in micrometers, otherwise put a nan.</span>
+            <span class="n">positions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">position</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">positions</span></div>
+
+
+<span class="k">def</span> <span class="nf">get_num</span><span class="p">(</span><span class="n">string_with_number</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    get numbers in a string</span>
+
+<span class="sd">    :param string_with_number:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ele</span> <span class="k">for</span> <span class="n">ele</span> <span class="ow">in</span> <span class="n">string_with_number</span> <span class="k">if</span> <span class="n">ele</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()))</span>  <span class="c1"># get digits</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>  <span class="c1"># if no digits in the string, just assign -1</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Francisco Torres-Herrador
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

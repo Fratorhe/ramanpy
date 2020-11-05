@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Release History &mdash; ramanpy 0.post20+g0b1b23b documentation</title>
+  <title>Runners &mdash; ramanpy 0.post20+g0b1b23b documentation</title>
   
 
   
@@ -39,7 +39,8 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Post-processing Classes" href="post-processing.html" />
+    <link rel="next" title="Post-processing Example" href="post-processing-example.html" />
+    <link rel="prev" title="Step by step" href="usage.html" />
     <link href="_static/style.css" rel="stylesheet" type="text/css">
 
 </head>
@@ -93,14 +94,11 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Step by step</a></li>
-<li class="toctree-l1"><a class="reference internal" href="usage-runners.html">Runners</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Runners</a></li>
 <li class="toctree-l1"><a class="reference internal" href="post-processing-example.html">Post-processing Example</a></li>
 <li class="toctree-l1"><a class="reference internal" href="classes.html">Fitting Classes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="post-processing.html">Post-processing Classes</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Release History</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#initial-release-yyyy-mm-dd">Initial Release (YYYY-MM-DD)</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="release-history.html">Release History</a></li>
 </ul>
 
             
@@ -147,13 +145,13 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Release History</li>
+      <li>Runners</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/release-history.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/usage-runners.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -166,11 +164,53 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="release-history">
-<h1>Release History<a class="headerlink" href="#release-history" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="initial-release-yyyy-mm-dd">
-<h2>Initial Release (YYYY-MM-DD)<a class="headerlink" href="#initial-release-yyyy-mm-dd" title="Permalink to this headline">¶</a></h2>
+  <div class="section" id="runners">
+<h1>Runners<a class="headerlink" href="#runners" title="Permalink to this headline">¶</a></h1>
+<p>Instead of going step by step, we can also define runners.
+These functions wrap the complexity of a typical case, so that user only needs a couple of lines of code.
+The list of all the runners is provided below.
+First, we describe here the one runner for Raman carbon material.</p>
+<p>In this case, only the file to analyze and the peaks file are required. If the file peaks has any problem, the default
+one will be read instead.
+Then, the code will read the peaks file, and the extra data provided in other_data.
+This will instantiate an object of the class <a class="reference internal" href="classes.html#ramanpy.RamanFit" title="ramanpy.RamanFit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ramanpy.RamanFit()</span></code></a>. Following, some methods will be run on the data
+(see source code for information). Then, the fit will be performed, the figure and report also saved.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ramanpy</span> <span class="k">as</span> <span class="nn">rp</span>
+<span class="n">rp</span><span class="o">.</span><span class="n">runners</span><span class="o">.</span><span class="n">raman_fit_carbon</span><span class="p">(</span><span class="n">file_to_analyze</span><span class="p">,</span> <span class="n">file_peaks</span><span class="p">)</span>
+</pre></div>
 </div>
+<span class="target" id="module-ramanpy.runners"></span><dl class="py function">
+<dt id="ramanpy.runners.raman_fit_carbon">
+<code class="sig-prename descclassname">ramanpy.runners.</code><code class="sig-name descname">raman_fit_carbon</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file_to_analyze</span></em>, <em class="sig-param"><span class="n">file_peaks</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ramanpy/runners.html#raman_fit_carbon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramanpy.runners.raman_fit_carbon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runner for carbon typical Raman case.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>file_to_analyze: str</strong></dt><dd><p>name of the file to analyze</p>
+</dd>
+<dt><strong>file_peaks: str</strong></dt><dd><p>name of the peaks file, if not provided, use the default one.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ramanpy.runners.xrd_fit_carbon">
+<code class="sig-prename descclassname">ramanpy.runners.</code><code class="sig-name descname">xrd_fit_carbon</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file_to_analyze</span></em>, <em class="sig-param"><span class="n">file_peaks</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ramanpy/runners.html#xrd_fit_carbon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramanpy.runners.xrd_fit_carbon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runner for carbon typical XRD case.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>file_to_analyze: str</strong></dt><dd><p>name of the file to analyze</p>
+</dd>
+<dt><strong>file_peaks: str</strong></dt><dd><p>name of the peaks file, if not provided, use the default one.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 
 
@@ -181,8 +221,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
+        <a href="post-processing-example.html" class="btn btn-neutral float-right" title="Post-processing Example" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
-        <a href="post-processing.html" class="btn btn-neutral float-left" title="Post-processing Classes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+        <a href="usage.html" class="btn btn-neutral float-left" title="Step by step" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

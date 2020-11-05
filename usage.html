@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Usage &mdash; ramanpy 0.post18+g16299b4 documentation</title>
+  <title>Step by step &mdash; ramanpy 0.post20+g0b1b23b documentation</title>
   
 
   
@@ -39,7 +39,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Release History" href="release-history.html" />
+    <link rel="next" title="Runners" href="usage-runners.html" />
     <link rel="prev" title="Installation" href="installation.html" />
     <link href="_static/style.css" rel="stylesheet" type="text/css">
 
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                0.post18+g16299b4
+                0.post20+g0b1b23b
               </div>
             
           
@@ -93,9 +93,12 @@
             
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Step by step</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage-runners.html">Runners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="post-processing-example.html">Post-processing Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes.html">Fitting Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="post-processing.html">Post-processing Classes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="release-history.html">Release History</a></li>
-<li class="toctree-l1"><a class="reference internal" href="classes.html">Classes</a></li>
 </ul>
 
             
@@ -142,7 +145,7 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Usage</li>
+      <li>Step by step</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -161,13 +164,65 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="usage">
-<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="step-by-step">
+<h1>Step by step<a class="headerlink" href="#step-by-step" title="Permalink to this headline">¶</a></h1>
+<p>We will use an example of fitting Raman spectra, but XRD should be analogous.</p>
 <p>Start by importing ramanpy as rp</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ramanpy</span> <span class="k">as</span> <span class="nn">rp</span>
 </pre></div>
 </div>
-<p>The first step is to</p>
+<p>Get the peaks file and the extra data if it applies.
+The peaks file should looks like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># peaks found in the data</span>
+<span class="n">peaks</span> <span class="o">=</span> <span class="mi">1150</span><span class="p">,</span> <span class="mi">1346</span><span class="p">,</span> <span class="mi">1587</span><span class="p">,</span> <span class="mi">2480</span><span class="p">,</span> <span class="mi">2687</span><span class="p">,</span> <span class="mi">2932</span><span class="p">,</span> <span class="mi">3230</span>
+
+<span class="c1"># other data</span>
+<span class="p">[</span><span class="n">other</span> <span class="n">data</span><span class="p">]</span>
+<span class="n">save_report</span> <span class="o">=</span> <span class="n">report_fit</span>
+<span class="n">poly_type</span> <span class="o">=</span> <span class="n">linear</span>
+
+<span class="c1"># for smoothing</span>
+<span class="n">window_size</span> <span class="o">=</span> <span class="mi">15</span>
+<span class="n">poly_order</span>  <span class="o">=</span> <span class="mi">3</span>
+
+<span class="c1">## extra data could be put here to modify for example the type of polynomial used to substract background</span>
+
+<span class="n">peak_center_tolerance</span> <span class="o">=</span> <span class="mi">200</span>
+</pre></div>
+</div>
+<p>As you can see, in this case, the extra data is also included there <strong>[other data]</strong>.</p>
+<p>To read these files, we do the following:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">file_peaks</span> <span class="o">=</span> <span class="s1">&#39;raman_linear_carbon.ini&#39;</span>
+
+<span class="n">peaks</span> <span class="o">=</span> <span class="n">RamanFit</span><span class="o">.</span><span class="n">read_peaks_configfile</span><span class="p">(</span><span class="n">file_peaks</span><span class="p">)</span>
+<span class="n">other_data</span> <span class="o">=</span> <span class="n">RamanFit</span><span class="o">.</span><span class="n">read_otherdata_configfile</span><span class="p">(</span><span class="n">file_peaks</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Then, instantiate an object of the class <code class="xref py py-meth docutils literal notranslate"><span class="pre">ramanpy.Ramanfit()</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">raman_carbon</span> <span class="o">=</span> <span class="n">RamanFit</span><span class="p">(</span><span class="n">file_to_analyze</span><span class="o">=</span><span class="n">file_to_analyze</span><span class="p">,</span> <span class="n">peaks</span><span class="o">=</span><span class="n">peaks</span><span class="p">,</span> <span class="n">other_data</span><span class="o">=</span><span class="n">other_data</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We can apply different data treatment such as:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">raman_carbon</span><span class="o">.</span><span class="n">apply_smoothing</span><span class="p">()</span>
+<span class="n">raman_carbon</span><span class="o">.</span><span class="n">apply_normalize</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Then, we can set the tolerances for each variable (peak center, amplitude and sigma), and build the model with the
+different peaks.
+Info here: <a class="reference external" href="https://lmfit.github.io/lmfit-py/builtin_models.html#lorentzianmodel">LMFIT Lorentzian model</a></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">raman_carbon</span><span class="o">.</span><span class="n">set_tolerances_fit</span><span class="p">()</span>
+<span class="n">raman_carbon</span><span class="o">.</span><span class="n">build_fitting_model_peaks</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Once the model is built, we can fit it:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">raman_carbon</span><span class="o">.</span><span class="n">run_fit_model</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>And finally, plot and save the results:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">raman_carbon</span><span class="o">.</span><span class="n">plot_results</span><span class="p">()</span>
+<span class="n">raman_carbon</span><span class="o">.</span><span class="n">save_results</span><span class="p">()</span>
+</pre></div>
+</div>
 </div>
 
 
@@ -178,7 +233,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="release-history.html" class="btn btn-neutral float-right" title="Release History" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="usage-runners.html" class="btn btn-neutral float-right" title="Runners" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

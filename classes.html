@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Classes &mdash; ramanpy 0.post18+g16299b4 documentation</title>
+  <title>Fitting Classes &mdash; ramanpy 0.post20+g0b1b23b documentation</title>
   
 
   
@@ -39,7 +39,8 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Release History" href="release-history.html" />
+    <link rel="next" title="Post-processing Classes" href="post-processing.html" />
+    <link rel="prev" title="Post-processing Example" href="post-processing-example.html" />
     <link href="_static/style.css" rel="stylesheet" type="text/css">
 
 </head>
@@ -65,7 +66,7 @@
             
             
               <div class="version">
-                0.post18+g16299b4
+                0.post20+g0b1b23b
               </div>
             
           
@@ -92,9 +93,12 @@
             
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Step by step</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage-runners.html">Runners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="post-processing-example.html">Post-processing Example</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Fitting Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="post-processing.html">Post-processing Classes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="release-history.html">Release History</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Classes</a></li>
 </ul>
 
             
@@ -141,7 +145,7 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Classes</li>
+      <li>Fitting Classes</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -160,23 +164,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="classes">
-<h1>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="fitting-classes">
+<h1>Fitting Classes<a class="headerlink" href="#fitting-classes" title="Permalink to this headline">¶</a></h1>
 <p>The main class is the ramanpy.GenericFit, which implements all the required methods to fit spectra.</p>
-<dl class="py function">
+<dl class="py class">
 <dt id="ramanpy.GenericFit">
-<code class="sig-prename descclassname">ramanpy.</code><code class="sig-name descname">GenericFit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">experimental_data</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">peaks</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">other_data</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">folder_out</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ramanpy/generic_fit_class.html#GenericFit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramanpy.GenericFit" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ramanpy.</code><code class="sig-name descname">GenericFit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">experimental_data</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">peaks</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">other_data</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">folder_out</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ramanpy/generic_fit_class.html#GenericFit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramanpy.GenericFit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generic Fit class
 This abstract class is used as base for Raman and XRD specialized classes.</p>
-</dd></dl>
-
-<p>However, other classes inherit from it: RamanFit and XRDFit. The main changes are the reading of the experimental
-files and the bounds used in the lorentzians.</p>
-<dl class="py function">
-<dt id="ramanpy.RamanFit">
-<code class="sig-prename descclassname">ramanpy.</code><code class="sig-name descname">RamanFit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file_to_analyze</span></em>, <em class="sig-param"><span class="n">peaks</span></em>, <em class="sig-param"><span class="n">other_data</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">folder_out</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ramanpy/specific_fit_classes.html#RamanFit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramanpy.RamanFit" title="Permalink to this definition">¶</a></dt>
-<dd><p>A class to fit raman spectra</p>
-<p>…</p>
 <dl class="field-list simple">
 <dt class="field-odd">Attributes</dt>
 <dd class="field-odd"><dl class="simple">
@@ -190,6 +185,111 @@ files and the bounds used in the lorentzians.</p>
 </dd>
 <dt><strong>folder_out: str</strong></dt><dd><p>folder to save the reports from the fit</p>
 </dd>
+</dl>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="ramanpy.GenericFit.apply_normalize">
+<code class="sig-name descname">apply_normalize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ramanpy/generic_fit_class.html#GenericFit.apply_normalize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramanpy.GenericFit.apply_normalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>performs the normalization.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ramanpy.GenericFit.apply_smoothing">
+<code class="sig-name descname">apply_smoothing</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ramanpy/generic_fit_class.html#GenericFit.apply_smoothing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramanpy.GenericFit.apply_smoothing" title="Permalink to this definition">¶</a></dt>
+<dd><p>performs smoothing using _sav_gol filter.
+:param inplace: bool. if False, returns a new column for the df called smoothed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ramanpy.GenericFit.build_fitting_model_peaks">
+<code class="sig-name descname">build_fitting_model_peaks</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ramanpy/generic_fit_class.html#GenericFit.build_fitting_model_peaks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramanpy.GenericFit.build_fitting_model_peaks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds the fitting model with parameters.
+It uses a quadraticModel to remove background noise, even though it is not the most important.
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ramanpy.GenericFit.create_bkg_model">
+<code class="sig-name descname">create_bkg_model</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ramanpy/generic_fit_class.html#GenericFit.create_bkg_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramanpy.GenericFit.create_bkg_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a bkg model for removing the background from the signals.
+Gets the data from the other_data part of the input file. Otherwise it will assign quadratic.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>model lmfit  for the bkg function.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>params lmfit parameters to be adjusted.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ramanpy.GenericFit.plot_results">
+<code class="sig-name descname">plot_results</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ramanpy/generic_fit_class.html#GenericFit.plot_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramanpy.GenericFit.plot_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the results of the fit.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ramanpy.GenericFit.read_otherdata_configfile">
+<em class="property">static </em><code class="sig-name descname">read_otherdata_configfile</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">config_file</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ramanpy/generic_fit_class.html#GenericFit.read_otherdata_configfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramanpy.GenericFit.read_otherdata_configfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read if there is any extra data in the configfile</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>config_file</strong> – str
+name of the file with the extra data</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>dict
+with the other data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ramanpy.GenericFit.read_peaks_configfile">
+<em class="property">static </em><code class="sig-name descname">read_peaks_configfile</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">config_file</span></em>, <em class="sig-param"><span class="n">default_peaks_file</span></em>, <em class="sig-param"><span class="n">default_folder</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ramanpy/generic_fit_class.html#GenericFit.read_peaks_configfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramanpy.GenericFit.read_peaks_configfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alternate constructor from configobj file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_to_analyze</strong> – filename</p></li>
+<li><p><strong>config_file</strong> – configobj file</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ramanpy.GenericFit.run_fit_model">
+<code class="sig-name descname">run_fit_model</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ramanpy/generic_fit_class.html#GenericFit.run_fit_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramanpy.GenericFit.run_fit_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform the fit</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ramanpy.GenericFit.save_results">
+<code class="sig-name descname">save_results</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ramanpy/generic_fit_class.html#GenericFit.save_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramanpy.GenericFit.save_results" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Saves 2 types of files:</dt><dd><p>report file : with a lot of data
+params file : with the actual paramters and their std.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<p>However, other classes inherit from it: RamanFit and XRDFit. The main changes are the reading of the experimental
+files and the bounds used in the lorentzians.</p>
+<dl class="py class">
+<dt id="ramanpy.RamanFit">
+<em class="property">class </em><code class="sig-prename descclassname">ramanpy.</code><code class="sig-name descname">RamanFit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file_to_analyze</span></em>, <em class="sig-param"><span class="n">peaks</span></em>, <em class="sig-param"><span class="n">other_data</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">folder_out</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ramanpy/specific_fit_classes.html#RamanFit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramanpy.RamanFit" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class to fit raman spectra</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes</dt>
+<dd class="field-odd"><dl class="simple">
 <dt><strong>var_x: str</strong></dt><dd><p>variable name for x, usually wavenumber, for plot only</p>
 </dd>
 <dt><strong>var_y: str</strong></dt><dd><p>variable name for y, usually intensity, for plot only</p>
@@ -201,41 +301,61 @@ files and the bounds used in the lorentzians.</p>
 </dl>
 </dd>
 </dl>
-<p class="rubric">Methods</p>
-<table class="docutils align-default">
-<colgroup>
-<col style="width: 30%" />
-<col style="width: 70%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><strong>read_data_raman(file_to_analyze):</strong></p></td>
-<td><p>reads the data and dumps in pandas dataframe</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>fit_lorentzians():</strong></p></td>
-<td><p>fits the lorentzians (from add_peak) to the data. Returns plot, print and report file.</p></td>
-</tr>
-</tbody>
-</table>
+<dl class="py method">
+<dt id="ramanpy.RamanFit.read_data_raman">
+<em class="property">static </em><code class="sig-name descname">read_data_raman</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file_to_analyze</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ramanpy/specific_fit_classes.html#RamanFit.read_data_raman"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramanpy.RamanFit.read_data_raman" title="Permalink to this definition">¶</a></dt>
+<dd><p>read data and put in a dataframe, and metadata
+:param file_to_analyze: filename
+:return: pandas df and metadata</p>
 </dd></dl>
 
-<dl class="py function">
+<dl class="py method">
+<dt id="ramanpy.RamanFit.read_header">
+<em class="property">static </em><code class="sig-name descname">read_header</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ramanpy/specific_fit_classes.html#RamanFit.read_header"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramanpy.RamanFit.read_header" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to read the header of a file whose comments start with #
+:param filename: str name of file
+:return: header data cleaned up</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ramanpy.RamanFit.reader_single_point">
+<em class="property">static </em><code class="sig-name descname">reader_single_point</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">normalize</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">remove_offset</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ramanpy/specific_fit_classes.html#RamanFit.reader_single_point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramanpy.RamanFit.reader_single_point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reader for raman spectrometry files of a single location.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>filename: str</strong></dt><dd><p>with filename</p>
+</dd>
+<dt><strong>normalize: bool</strong></dt><dd><p>Normalize to maximum (max of the counts will be 1)</p>
+</dd>
+<dt><strong>remove_offset:bool</strong></dt><dd><p>Remove linear offset using detrend from scipy. Mostly for visualization</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>data: pandas dataframe with two columns: wavenumber and intensity</dt><dd></dd>
+<dt>header: metadata from the measurement</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ramanpy.RamanFit.set_tolerances_fit">
+<code class="sig-name descname">set_tolerances_fit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ramanpy/specific_fit_classes.html#RamanFit.set_tolerances_fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramanpy.RamanFit.set_tolerances_fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method tries to get the tolerances for the fit. If it does not find, will use some default ones.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt id="ramanpy.XRDFit">
-<code class="sig-prename descclassname">ramanpy.</code><code class="sig-name descname">XRDFit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file_to_analyze</span></em>, <em class="sig-param"><span class="n">peaks</span></em>, <em class="sig-param"><span class="n">other_data</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">folder_out</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ramanpy/specific_fit_classes.html#XRDFit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramanpy.XRDFit" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ramanpy.</code><code class="sig-name descname">XRDFit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file_to_analyze</span></em>, <em class="sig-param"><span class="n">peaks</span></em>, <em class="sig-param"><span class="n">other_data</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">folder_out</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ramanpy/specific_fit_classes.html#XRDFit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramanpy.XRDFit" title="Permalink to this definition">¶</a></dt>
 <dd><p>A class to fit XRD spectra</p>
-<p>…</p>
 <dl class="field-list simple">
 <dt class="field-odd">Attributes</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>data</strong><span class="classifier">df</span></dt><dd><p>experimental data</p>
-</dd>
-<dt><strong>metadata</strong><span class="classifier">list</span></dt><dd><p>metadata from the experiments</p>
-</dd>
-<dt><strong>peaks</strong><span class="classifier">list</span></dt><dd><p>list of peaks to be fit</p>
-</dd>
-<dt><strong>other_data</strong><span class="classifier">configObj</span></dt><dd><p>as it says…other data that could be parsed, so far, almost empty</p>
-</dd>
-<dt><strong>folder_out: str</strong></dt><dd><p>folder to save the reports from the fit</p>
-</dd>
 <dt><strong>var_x: str</strong></dt><dd><p>variable name for x, usually angle, for plot only</p>
 </dd>
 <dt><strong>var_y: str</strong></dt><dd><p>variable name for y, usually intensity, for plot only</p>
@@ -247,21 +367,34 @@ files and the bounds used in the lorentzians.</p>
 </dl>
 </dd>
 </dl>
-<p class="rubric">Methods</p>
-<table class="docutils align-default">
-<colgroup>
-<col style="width: 29%" />
-<col style="width: 71%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><strong>read_data_XRD(file_to_analyze):</strong></p></td>
-<td><p>reads the data and dumps in pandas dataframe</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>fit_lorentzians():</strong></p></td>
-<td><p>fits the lorentzians (from add_peak) to the data. Returns plot, print and report file.</p></td>
-</tr>
-</tbody>
-</table>
+<dl class="py method">
+<dt id="ramanpy.XRDFit.read_data_xrd">
+<em class="property">static </em><code class="sig-name descname">read_data_xrd</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">normalize</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ramanpy/specific_fit_classes.html#XRDFit.read_data_xrd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramanpy.XRDFit.read_data_xrd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reader for XRD files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>filename: str</strong></dt><dd><p>with filename</p>
+</dd>
+<dt><strong>normalize: bool</strong></dt><dd><p>Normalize to maximum (max of the counts will be 1)</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>data: pandas dataframe with two columns: angle and intensity</dt><dd></dd>
+<dt>header: metadata from the measurement</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ramanpy.XRDFit.set_tolerances_fit">
+<code class="sig-name descname">set_tolerances_fit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ramanpy/specific_fit_classes.html#XRDFit.set_tolerances_fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramanpy.XRDFit.set_tolerances_fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method tries to get the tolerances for the fit. If it does not find, will use some default ones.</p>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -274,8 +407,10 @@ files and the bounds used in the lorentzians.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
+        <a href="post-processing.html" class="btn btn-neutral float-right" title="Post-processing Classes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
-        <a href="release-history.html" class="btn btn-neutral float-left" title="Release History" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+        <a href="post-processing-example.html" class="btn btn-neutral float-left" title="Post-processing Example" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

@@ -1,10 +1,15 @@
 ./_modules/index.html
 ./_modules/ramanpy/generic_fit_class.html
+./_modules/ramanpy/process_results_raman.html
+./_modules/ramanpy/runners.html
 ./_modules/ramanpy/specific_fit_classes.html
 ./_sources/classes.rst.txt
 ./_sources/index.rst.txt
 ./_sources/installation.rst.txt
+./_sources/post-processing-example.rst.txt
+./_sources/post-processing.rst.txt
 ./_sources/release-history.rst.txt
+./_sources/usage-runners.rst.txt
 ./_sources/usage.rst.txt
 ./_static/basic.css
 ./_static/clipboard.min.js
@@ -100,7 +105,11 @@
 ./index.html
 ./installation.html
 ./objects.inv
+./post-processing-example.html
+./post-processing.html
+./py-modindex.html
 ./release-history.html
 ./search.html
 ./searchindex.js
+./usage-runners.html
 ./usage.html

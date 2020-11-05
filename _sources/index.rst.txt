@@ -13,7 +13,10 @@ It is still quite under construction, but works.
 
    installation
    usage
-   release-history
+   usage-runners
+   post-processing-example
    classes
+   post-processing
+   release-history
 
 # TODO: add here more information about the fits and stuff

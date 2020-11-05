@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ramanpy.specific_fit_classes &mdash; ramanpy 0.post18+g16299b4 documentation</title>
+  <title>ramanpy.specific_fit_classes &mdash; ramanpy 0.post20+g0b1b23b documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.post18+g16299b4
+                0.post20+g0b1b23b
               </div>
             
           
@@ -91,9 +91,12 @@
             
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Step by step</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage-runners.html">Runners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../post-processing-example.html">Post-processing Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../classes.html">Fitting Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../post-processing.html">Post-processing Classes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../release-history.html">Release History</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../classes.html">Classes</a></li>
 </ul>
 
             
@@ -171,20 +174,8 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A class to fit raman spectra</span>
 
-<span class="sd">    ...</span>
-
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
-<span class="sd">    data : df</span>
-<span class="sd">        experimental data</span>
-<span class="sd">    metadata : list</span>
-<span class="sd">        metadata from the experiments</span>
-<span class="sd">    peaks : list</span>
-<span class="sd">        list of peaks to be fit</span>
-<span class="sd">    other_data : configObj</span>
-<span class="sd">        as it says...other data that could be parsed, so far, almost empty</span>
-<span class="sd">    folder_out: str</span>
-<span class="sd">        folder to save the reports from the fit</span>
 <span class="sd">    var_x: str</span>
 <span class="sd">        variable name for x, usually wavenumber, for plot only</span>
 <span class="sd">    var_y: str</span>
@@ -194,12 +185,6 @@
 <span class="sd">    y: list</span>
 <span class="sd">        data y, in this case, intensity</span>
 
-<span class="sd">    Methods</span>
-<span class="sd">    -------</span>
-<span class="sd">    read_data_raman(file_to_analyze):</span>
-<span class="sd">        reads the data and dumps in pandas dataframe</span>
-<span class="sd">    fit_lorentzians():</span>
-<span class="sd">        fits the lorentzians (from add_peak) to the data. Returns plot, print and report file.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_to_analyze</span><span class="p">,</span> <span class="n">peaks</span><span class="p">,</span> <span class="n">other_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">folder_out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -212,7 +197,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">experimental_data</span><span class="p">[</span><span class="s1">&#39;intensity&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">file_to_analyze</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># remove the extension</span>
 
-    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="RamanFit.read_data_raman"><a class="viewcode-back" href="../../classes.html#ramanpy.RamanFit.read_data_raman">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">read_data_raman</span><span class="p">(</span><span class="n">file_to_analyze</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        read data and put in a dataframe, and metadata</span>
@@ -220,9 +205,9 @@
 <span class="sd">        :return: pandas df and metadata</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data</span><span class="p">,</span> <span class="n">metadata</span> <span class="o">=</span> <span class="n">RamanFit</span><span class="o">.</span><span class="n">reader_single_point</span><span class="p">(</span><span class="n">file_to_analyze</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">data</span><span class="p">,</span> <span class="n">metadata</span>
+        <span class="k">return</span> <span class="n">data</span><span class="p">,</span> <span class="n">metadata</span></div>
 
-    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="RamanFit.read_header"><a class="viewcode-back" href="../../classes.html#ramanpy.RamanFit.read_header">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">read_header</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Function to read the header of a file whose comments start with #</span>
@@ -233,19 +218,28 @@
             <span class="n">headiter</span> <span class="o">=</span> <span class="n">takewhile</span><span class="p">(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">),</span> <span class="n">myfile</span><span class="p">)</span>
             <span class="n">header</span> <span class="o">=</span> <span class="n">cleanup_header</span><span class="p">(</span><span class="n">headiter</span><span class="p">)</span>
         <span class="n">header</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">header</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">header</span>
+        <span class="k">return</span> <span class="n">header</span></div>
 
 
-    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="RamanFit.reader_single_point"><a class="viewcode-back" href="../../classes.html#ramanpy.RamanFit.reader_single_point">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">reader_single_point</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">remove_offset</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reader for raman spectrometry files of a single location.</span>
-<span class="sd">        :param filename: str with filename</span>
-<span class="sd">        :param normalize: bool. Normalize to maximum (max of the counts will be 1)</span>
-<span class="sd">        :param remove_offset: bool. Remove linear offset using detrend from scipy. Mostly for visualization</span>
-<span class="sd">        :return:</span>
-<span class="sd">            :data: pandas dataframe with two columns: wavenumber and intensity</span>
-<span class="sd">            :header: metadata from the measurement</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filename: str</span>
+<span class="sd">                with filename</span>
+<span class="sd">        normalize: bool</span>
+<span class="sd">                Normalize to maximum (max of the counts will be 1)</span>
+
+<span class="sd">        remove_offset:bool</span>
+<span class="sd">                Remove linear offset using detrend from scipy. Mostly for visualization</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------------</span>
+<span class="sd">        data: pandas dataframe with two columns: wavenumber and intensity</span>
+<span class="sd">        header: metadata from the measurement</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="s1">&#39;#&#39;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;wavenumber&#39;</span><span class="p">,</span> <span class="s1">&#39;intensity&#39;</span><span class="p">])</span>
         <span class="n">header</span> <span class="o">=</span> <span class="n">RamanFit</span><span class="o">.</span><span class="n">read_header</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">)</span>
@@ -255,14 +249,18 @@
         <span class="k">if</span> <span class="n">remove_offset</span><span class="p">:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">intensity</span> <span class="o">=</span> <span class="n">detrend</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">intensity</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">data</span><span class="p">,</span> <span class="n">header</span>
+        <span class="k">return</span> <span class="n">data</span><span class="p">,</span> <span class="n">header</span></div>
 
-    <span class="k">def</span> <span class="nf">set_tolerances_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">min_max_amplitude</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">try_get_other_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">other_data</span><span class="p">,</span> <span class="s1">&#39;min_max_amplitude&#39;</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">200</span><span class="p">))</span>
-        <span class="n">min_max_sigma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">try_get_other_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">other_data</span><span class="p">,</span> <span class="s1">&#39;min_max_sigma&#39;</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">200</span><span class="p">))</span>
-        <span class="n">tolerance_center</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">try_get_other_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">other_data</span><span class="p">,</span> <span class="s1">&#39;peak_center_tolerance&#39;</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,))[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">amplitude</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">try_get_other_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">other_data</span><span class="p">,</span> <span class="s1">&#39;amplitude&#39;</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,))[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">sigma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">try_get_other_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">other_data</span><span class="p">,</span> <span class="s1">&#39;sigma&#39;</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,))[</span><span class="mi">0</span><span class="p">]</span>
+<div class="viewcode-block" id="RamanFit.set_tolerances_fit"><a class="viewcode-back" href="../../classes.html#ramanpy.RamanFit.set_tolerances_fit">[docs]</a>    <span class="k">def</span> <span class="nf">set_tolerances_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This method tries to get the tolerances for the fit. If it does not find, will use some default ones.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">min_max_amplitude</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_try_get_other_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">other_data</span><span class="p">,</span> <span class="s1">&#39;min_max_amplitude&#39;</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">200</span><span class="p">))</span>
+        <span class="n">min_max_sigma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_try_get_other_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">other_data</span><span class="p">,</span> <span class="s1">&#39;min_max_sigma&#39;</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">200</span><span class="p">))</span>
+        <span class="n">tolerance_center</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_try_get_other_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">other_data</span><span class="p">,</span> <span class="s1">&#39;peak_center_tolerance&#39;</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">amplitude</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_try_get_other_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">other_data</span><span class="p">,</span> <span class="s1">&#39;amplitude&#39;</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_try_get_other_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">other_data</span><span class="p">,</span> <span class="s1">&#39;sigma&#39;</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,))[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">dict_tolerances_fit</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;min_max_amplitude&#39;</span><span class="p">:</span> <span class="n">min_max_amplitude</span><span class="p">,</span>
@@ -270,27 +268,16 @@
             <span class="s1">&#39;tolerance_center&#39;</span><span class="p">:</span> <span class="n">tolerance_center</span><span class="p">,</span>
             <span class="s1">&#39;amplitude&#39;</span><span class="p">:</span> <span class="n">amplitude</span><span class="p">,</span>
             <span class="s1">&#39;sigma&#39;</span><span class="p">:</span> <span class="n">sigma</span>
-        <span class="p">}</span></div>
+        <span class="p">}</span></div></div>
 
 
 <div class="viewcode-block" id="XRDFit"><a class="viewcode-back" href="../../classes.html#ramanpy.XRDFit">[docs]</a><span class="k">class</span> <span class="nc">XRDFit</span><span class="p">(</span><span class="n">GenericFit</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A class to fit XRD spectra</span>
 
-<span class="sd">    ...</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
-<span class="sd">    data : df</span>
-<span class="sd">        experimental data</span>
-<span class="sd">    metadata : list</span>
-<span class="sd">        metadata from the experiments</span>
-<span class="sd">    peaks : list</span>
-<span class="sd">        list of peaks to be fit</span>
-<span class="sd">    other_data : configObj</span>
-<span class="sd">        as it says...other data that could be parsed, so far, almost empty</span>
-<span class="sd">    folder_out: str</span>
-<span class="sd">        folder to save the reports from the fit</span>
 <span class="sd">    var_x: str</span>
 <span class="sd">        variable name for x, usually angle, for plot only</span>
 <span class="sd">    var_y: str</span>
@@ -300,12 +287,6 @@
 <span class="sd">    y: list</span>
 <span class="sd">        data y, in this case, intensity</span>
 
-<span class="sd">    Methods</span>
-<span class="sd">    -------</span>
-<span class="sd">    read_data_XRD(file_to_analyze):</span>
-<span class="sd">        reads the data and dumps in pandas dataframe</span>
-<span class="sd">    fit_lorentzians():</span>
-<span class="sd">        fits the lorentzians (from add_peak) to the data. Returns plot, print and report file.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_to_analyze</span><span class="p">,</span> <span class="n">peaks</span><span class="p">,</span> <span class="n">other_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">folder_out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -318,15 +299,22 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">experimental_data</span><span class="p">[</span><span class="s1">&#39;intensity&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">file_to_analyze</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># remove the extension</span>
 
-    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="XRDFit.read_data_xrd"><a class="viewcode-back" href="../../classes.html#ramanpy.XRDFit.read_data_xrd">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">read_data_xrd</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reader for XRD files.</span>
-<span class="sd">        :param normalize: bool</span>
-<span class="sd">        :param filename: str with filename</span>
-<span class="sd">        :return:</span>
-<span class="sd">            :data: pandas dataframe with two columns: angle and intensity</span>
-<span class="sd">            :header: metadata from the measurement</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filename: str</span>
+<span class="sd">                with filename</span>
+<span class="sd">        normalize: bool</span>
+<span class="sd">                Normalize to maximum (max of the counts will be 1)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------------</span>
+<span class="sd">        data: pandas dataframe with two columns: angle and intensity</span>
+<span class="sd">        header: metadata from the measurement</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="s1">&#39;#&#39;</span><span class="p">,</span> <span class="n">delim_whitespace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                            <span class="n">index_col</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;angle&#39;</span><span class="p">,</span> <span class="s1">&#39;intensity&#39;</span><span class="p">])</span>
@@ -335,14 +323,18 @@
         <span class="k">if</span> <span class="n">normalize</span><span class="p">:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">intensity</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">intensity</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">/</span> <span class="n">data</span><span class="o">.</span><span class="n">intensity</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
 
-        <span class="k">return</span> <span class="n">data</span><span class="p">,</span> <span class="n">header</span>
+        <span class="k">return</span> <span class="n">data</span><span class="p">,</span> <span class="n">header</span></div>
 
-    <span class="k">def</span> <span class="nf">set_tolerances_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">min_max_amplitude</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">try_get_other_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">other_data</span><span class="p">,</span> <span class="s1">&#39;min_max_amplitude&#39;</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
-        <span class="n">min_max_sigma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">try_get_other_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">other_data</span><span class="p">,</span> <span class="s1">&#39;min_max_sigma&#39;</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
-        <span class="n">tolerance_center</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">try_get_other_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">other_data</span><span class="p">,</span> <span class="s1">&#39;peak_center_tolerance&#39;</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,))[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">amplitude</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">try_get_other_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">other_data</span><span class="p">,</span> <span class="s1">&#39;peak_center_tolerance&#39;</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,))[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">sigma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">try_get_other_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">other_data</span><span class="p">,</span> <span class="s1">&#39;peak_center_tolerance&#39;</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,))[</span><span class="mi">0</span><span class="p">]</span>
+<div class="viewcode-block" id="XRDFit.set_tolerances_fit"><a class="viewcode-back" href="../../classes.html#ramanpy.XRDFit.set_tolerances_fit">[docs]</a>    <span class="k">def</span> <span class="nf">set_tolerances_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This method tries to get the tolerances for the fit. If it does not find, will use some default ones.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">min_max_amplitude</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_try_get_other_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">other_data</span><span class="p">,</span> <span class="s1">&#39;min_max_amplitude&#39;</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+        <span class="n">min_max_sigma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_try_get_other_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">other_data</span><span class="p">,</span> <span class="s1">&#39;min_max_sigma&#39;</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+        <span class="n">tolerance_center</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_try_get_other_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">other_data</span><span class="p">,</span> <span class="s1">&#39;peak_center_tolerance&#39;</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">amplitude</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_try_get_other_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">other_data</span><span class="p">,</span> <span class="s1">&#39;peak_center_tolerance&#39;</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_try_get_other_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">other_data</span><span class="p">,</span> <span class="s1">&#39;peak_center_tolerance&#39;</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,))[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">dict_tolerances_fit</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;min_max_amplitude&#39;</span><span class="p">:</span> <span class="n">min_max_amplitude</span><span class="p">,</span>
@@ -350,7 +342,7 @@
             <span class="s1">&#39;tolerance_center&#39;</span><span class="p">:</span> <span class="n">tolerance_center</span><span class="p">,</span>
             <span class="s1">&#39;amplitude&#39;</span><span class="p">:</span> <span class="n">amplitude</span><span class="p">,</span>
             <span class="s1">&#39;sigma&#39;</span><span class="p">:</span> <span class="n">sigma</span>
-        <span class="p">}</span></div>
+        <span class="p">}</span></div></div>
 </pre></div>
 
            </div>
