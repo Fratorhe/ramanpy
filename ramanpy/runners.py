@@ -43,7 +43,7 @@ def xrd_fit_carbon(file_to_analyze, file_peaks):
     default_peaks_file = 'XRD_linear_carbon.ini'
 
     peaks = XRDFit.read_peaks_configfile(file_peaks, default_peaks_file=default_peaks_file)
-    other_data = XRDFit.read_otherdata_configfile(file_peaks)
+    other_data = XRDFit.read_otherdata_configfile(file_peaks,default_config_file=default_peaks_file)
     xrd_carbon = XRDFit(file_to_analyze=file_to_analyze, peaks=peaks, other_data=other_data)
 
     xrd_carbon.apply_smoothing()

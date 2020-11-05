@@ -109,7 +109,6 @@ class GenericFit(ABC):
 
         """
 
-        poly_type = self.other_data.get('poly_type')
         model, params = self.create_bkg_model()
         for i, cen in enumerate(self.peaks):
             peak, pars = self._add_peak('lz%d' % (i + 1), cen, amplitude=self.dict_tolerances_fit['amplitude'],
@@ -323,7 +322,7 @@ class GenericFit(ABC):
         return intensity_data_scaled
 
     @staticmethod
-    def read_otherdata_configfile(config_file):
+    def read_otherdata_configfile(config_file, default_config_file, default_folder=None):
         """
         Read if there is any extra data in the configfile
 
@@ -334,7 +333,12 @@ class GenericFit(ABC):
         """
 
         config = ConfigObj(config_file)
-        other_data = config.get('other data', None)
+        other_data = config.get('other data')
+
+        if not other_data:
+            default_folder = Path(os.path.dirname(__file__)) / 'peak_files'
+            config = ConfigObj(str(default_folder / default_config_file))
+            other_data = config.get('other data')
 
         return other_data
 
@@ -348,7 +352,7 @@ class GenericFit(ABC):
         :return:
         """
         if default_folder is None:
-            default_folder = Path(os.path.dirname(__file__))
+            default_folder = Path(os.path.dirname(__file__)) / 'peak_files'
 
         try:
             config = ConfigObj(config_file)
